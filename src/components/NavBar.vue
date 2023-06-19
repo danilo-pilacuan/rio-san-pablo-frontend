@@ -1,0 +1,236 @@
+<template>
+  <nav
+    v-show="isNavBarVisible"
+    id="navbar-main"
+    class="navbar is-fixed-top no-print"
+  >
+    <div class="navbar-brand">
+      <a
+        class="navbar-item is-hidden-desktop"
+        @click.prevent="asideToggleMobile"
+      >
+        <b-icon :icon="asideMobileIcon" />
+      </a>
+      <a
+        class="navbar-item is-hidden-touch is-hidden-widescreen is-desktop-icon-only"
+        @click.prevent="asideDesktopOnlyToggle"
+      >
+        <b-icon icon="menu" />
+      </a>
+      
+    </div>
+    <div class="navbar-brand is-right">
+      <a
+        class="navbar-item navbar-item-menu-toggle is-hidden-desktop"
+        @click.prevent="menuToggle"
+      >
+        <b-icon
+          :icon="menuToggleIcon"
+          custom-size="default"
+        />
+      </a>
+    </div>
+    <div
+      class="navbar-menu fadeIn animated faster"
+      :class="{ 'is-active': isMenuActive }"
+    >
+      <div class="navbar-end">
+        <!-- <nav-bar-menu class="has-divider">
+          <b-icon
+            icon="menu"
+            custom-size="default"
+          />
+          <span>Sample Menu</span>
+          <div
+            slot="dropdown"
+            class="navbar-dropdown"
+          >
+            <router-link
+              to="/profile"
+              class="navbar-item"
+              exact-active-class="is-active"
+            >
+              <b-icon
+                icon="account"
+                custom-size="default"
+              />
+              <span>My Profile</span>
+            </router-link>
+            <a class="navbar-item">
+              <b-icon
+                icon="settings"
+                custom-size="default"
+              />
+              <span>Settings</span>
+            </a>
+            <a class="navbar-item">
+              <b-icon
+                icon="email"
+                custom-size="default"
+              />
+              <span>Messages</span>
+            </a>
+            <hr class="navbar-divider">
+            <a class="navbar-item">
+              <b-icon
+                icon="logout"
+                custom-size="default"
+              />
+              <span>Log Out</span>
+            </a>
+          </div>
+        </nav-bar-menu> -->
+        <nav-bar-menu class="has-divider has-user-avatar">
+          <!-- <user-avatar /> -->
+          <div class="is-user-name">
+            <span>Administrador</span>
+          </div>
+
+          <div
+            slot="dropdown"
+            class="navbar-dropdown"
+          >
+            <router-link
+              to="/profile"
+              class="navbar-item"
+              exact-active-class="is-active"
+            >
+              <b-icon
+                icon="account"
+                custom-size="default"
+              />
+              <span>Mi perfil</span>
+            </router-link>
+            <!-- <a class="navbar-item">
+              <b-icon
+                icon="settings"
+                custom-size="default"
+              />
+              <span>Configuración</span>
+            </a> -->
+            <hr class="navbar-divider">
+            <a class="navbar-item" @click="logout">
+              <b-icon
+                icon="logout"
+                custom-size="default"
+              />
+              <span>Cerrar Sesión</span>
+            </a>
+          </div>
+        </nav-bar-menu>
+       
+        <a
+          class="navbar-item is-desktop-icon-only"
+          title="Log out"
+          @click="logout"
+        >
+          <b-icon
+            icon="logout"
+            custom-size="default"
+          />
+          <span>Log out</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script>
+import { useStore } from '@/store'
+import { useRouter } from '@/router'
+import { computed, ref, onMounted } from '@vue/composition-api'
+import NavBarMenu from '@/components/NavBarMenu.vue'
+import UserAvatar from '@/components/UserAvatar.vue'
+
+export default {
+  name: 'NavBar',
+  components: {
+    UserAvatar,
+    NavBarMenu
+  },
+  setup (props, { root: { $buefy } }) {
+    const store = useStore()
+
+    const asideToggleMobile = () => {
+      store.commit('asideMobileStateToggle')
+    }
+
+    const asideDesktopOnlyToggle = () => {
+      store.dispatch('asideDesktopOnlyToggle')
+    }
+
+    const isAsideMobileExpanded = computed(() => store.state.isAsideMobileExpanded)
+
+    const asideMobileIcon = computed(
+      () => isAsideMobileExpanded.value ? 'backburger' : 'forwardburger'
+    )
+
+    const isNavBarVisible = computed(() => store.state.isNavBarVisible)
+
+    const userName = computed(() => store.state.userName)
+
+    const isMenuActive = ref(false)
+
+    const menuToggle = () => {
+      isMenuActive.value = !isMenuActive.value
+    }
+
+    const menuToggleIcon = computed(
+      () => isMenuActive.value ? 'close' : 'dots-vertical'
+    )
+
+    const router = useRouter()
+
+    onMounted(() => {
+      router.afterEach(() => {
+        isMenuActive.value = false
+      })
+    })
+
+    const logout = () => {
+      // $buefy.snackbar.open({
+      //   message: 'Log out clicked',
+      //   queue: false
+      // })
+
+      try {
+        fetch(process.env.VUE_APP_TITLE+"API/usuarios/logout", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            router.push('/login')
+          });
+      } catch (e) {
+        //this.$store.dispatch("setAuth", false);
+      }
+
+    }
+
+    return {
+      asideToggleMobile,
+      asideDesktopOnlyToggle,
+      isAsideMobileExpanded,
+      asideMobileIcon,
+      isNavBarVisible,
+      userName,
+      isMenuActive,
+      menuToggle,
+      menuToggleIcon,
+      logout
+    }
+  }
+}
+</script>
+
+<style>
+@media print
+{    
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}
+</style>
