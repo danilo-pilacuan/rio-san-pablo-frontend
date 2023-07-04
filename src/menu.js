@@ -43,6 +43,11 @@ export default [
       icon: 'bus'
     },
     {
+       to: '/inventario',
+      label: 'Inventario',
+      icon: 'warehouse'
+    },
+    {
       to: '/Contabilidad',
       label: 'Imprimir',
       icon: 'printer'

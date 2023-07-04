@@ -76,6 +76,22 @@ const routes = [
     name: 'unidades',
     component: () => import('@/views/Unidades.vue')
   },
+  {
+    meta: {
+      title: 'Inventario'
+    },
+    path: '/inventario',
+    name: 'inventario',
+    component: () => import('@/views/Inventario.vue')
+  },
+  {
+    meta: {
+      title: 'Aportes'
+    },
+    path: '/aportes',
+    name: 'aportes',
+    component: () => import('@/views/Aportes.vue')
+  },
   //fin rutas cruds
   {
     path: '/full-page',
