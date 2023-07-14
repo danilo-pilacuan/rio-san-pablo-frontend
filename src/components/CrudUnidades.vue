@@ -26,12 +26,13 @@
           :per-page="20"
         >
 
-          <b-table-column
+          <!-- <b-table-column
             v-slot="props"
             label="Placa"
             field="placa"
             searchable
           >
+          
             {{ props.row.placa }}
           </b-table-column>
           <b-table-column
@@ -58,8 +59,33 @@
             searchable
           >
             {{ props.row.activo?"Si":"No" }}
-          </b-table-column>
+          </b-table-column> -->
           
+          <template v-for="column in columns">
+              <b-table-column :key="column.id" v-bind="column">
+                <template
+                  v-if="column.searchable && !column.numeric"
+                  #searchable="props"
+                >
+                  <b-input
+                    v-model="props.filters[props.column.field]"
+                    placeholder="Buscar..."
+                    icon="magnify"
+                    size="is-small"
+                  />
+                </template>
+                <template v-slot="props">
+                  <div v-if="typeof props.row[column.field] === 'object'">
+                                    <span v-for="subfieldIter in column.subFields">
+                                      {{ props.row[column.field][subfieldIter] }}
+                                    </span>
+                                </div>
+                  <div v-else>
+                    {{ column.field=="activo"?(props.row[column.field]==1?"Si":"No"):props.row[column.field] }}
+                  </div>
+                </template>
+              </b-table-column>
+            </template>
 
           <b-table-column field="actions" label="Acciones" v-slot="props">
             <div class="buttons" style="display: flex; flex-wrap: inherit;">
@@ -125,7 +151,7 @@
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Observaciones">
+                <b-field label="Estado Técnico">
                   <b-input v-model="inputObservaciones"></b-input>
                 </b-field>
               </div>
@@ -208,6 +234,14 @@ export default {
 
       //control errores validacion
       
+      columns: [
+        
+        { field: "placa", label: "Fecha", searchable: true, },
+        { field: "descripcion", label: "Descripción", searchable: true, },
+        { field: "observaciones", label: "Estado Técnico", searchable: true, }, 
+        { field: "activo", label: "Activo", searchable: true, }, 
+        
+      ],
 
     };
   },

@@ -25,7 +25,37 @@
           :paginated="true"
           :per-page="20"
         >
-          <b-table-column
+
+        <template v-for="column in columns">
+              <b-table-column :key="column.id" v-bind="column">
+                <template
+                  v-if="column.searchable && !column.numeric"
+                  #searchable="props"
+                >
+                  <b-input
+                    v-model="props.filters[props.column.field]"
+                    placeholder="Buscar..."
+                    icon="magnify"
+                    size="is-small"
+                  />
+                </template>
+                <template v-slot="props">
+                  <div v-if="typeof props.row[column.field] === 'object'">
+                                    <span v-for="subfieldIter in column.subFields">
+                                      {{ props.row[column.field][subfieldIter] }}
+                                    </span>
+                                </div>
+                  <div v-else>
+                    {{ column.field=="activo"?(props.row[column.field]==1?"Si":"No"):"" }}
+                    {{ column.field=="tipoSocio"?(props.row[column.field]==1?"Chofer":"Controlador"):"" }}
+                    {{ (column.field!="tipoSocio" && column.field!="activo")?props.row[column.field]:"" }}
+                  </div>
+                </template>
+              </b-table-column>
+            </template>
+
+
+          <!-- <b-table-column
             v-slot="props"
             label="Cédula"
             field="cedula"
@@ -81,7 +111,7 @@
             searchable
           >
             {{ props.row.activo?"Si":"No" }}
-          </b-table-column>
+          </b-table-column> -->
           
 
           <b-table-column field="actions" label="Acciones" v-slot="props">
@@ -261,7 +291,17 @@ export default {
       showModalDelete: false,
 
       //control errores validacion
-      
+      columns: [
+        
+        { field: "cedula", label: "Cédula", searchable: true, },
+        { field: "nombres", label: "Nombres", searchable: true, },
+        { field: "apellidos", label: "Apellidos", searchable: true, }, 
+        { field: "direccion", label: "Dirección", searchable: true, }, 
+        { field: "telefono", label: "Teléfono", searchable: true, }, 
+        { field: "tipoSocio", label: "Tipo Socio", searchable: true, }, 
+        { field: "activo", label: "Activo", searchable: true, }, 
+        
+      ],
 
     };
   },

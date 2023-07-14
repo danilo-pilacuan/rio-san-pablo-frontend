@@ -24,6 +24,7 @@
           :searchable="true"
           :paginated="true"
           :per-page="20"
+          
         >
           <template v-for="column in columns">
             <b-table-column :key="column.id" v-bind="column">
@@ -73,7 +74,7 @@
       </div>
     </div>
 
-    <b-modal v-model="showModalCreateEdit">
+    <b-modal v-model="showModalCreateEdit" v-if="inventario">
       <form @submit.prevent="submit">
         <!-- <b-checkbox v-model="hasError">Show errors</b-checkbox> -->
         <div class="modal-card" style="width: auto">
@@ -89,69 +90,35 @@
             <div class="columns">
               <div class="column">
                 <b-field
-                  label="Cédula"
+                  label="Nombre"
                 >
-                
-                  <b-input v-model="inputCedula"></b-input>
+                  <b-input v-model="inventario.nombre"></b-input>
                 </b-field>
               </div>
             </div>
 
             <div class="columns">
               <div class="column">
-                <b-field label="Nombres">
-                  <b-input v-model="inputNombres"></b-input>
+                <b-field label="Descripción">
+                  <b-input v-model="inventario.descripcion"></b-input>
                 </b-field>
               </div>
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Apellidos">
-                  <b-input v-model="inputApellidos"></b-input>
+                <b-field label="Cantidad">
+                  <b-input v-model="inventario.cantidad"></b-input>
                 </b-field>
               </div>
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Dirección">
-                  <b-input v-model="inputDireccion"></b-input>
-                </b-field>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column">
-                <b-field label="Teléfono">
-                  <b-input v-model="inputTelefono"></b-input>
+                <b-field label="Observaciones">
+                  <b-input v-model="inventario.observaciones"></b-input>
                 </b-field>
               </div>
             </div>
 
-            <div class="columns">
-              <div class="column">
-                <b-field label="Tipo Inventario">
-                  <b-select placeholder="Tipo Inventario" v-model="inputTipoInventario">
-                    
-                    <option value="1">Chofer</option>
-                    <option value="2">Controlador</option>
-                    <option value="3">Dirigente</option>
-
-                  </b-select>
-                </b-field>
-              </div>
-            </div>
-
-            <div class="columns">
-              <div class="column">
-                <b-field label="Activo">
-                  <b-select placeholder="Activo" v-model="inputActivo">
-                    
-                    <option value="true">Activo</option>
-                    <option value="false">Inactivo</option>
-
-                  </b-select>
-                </b-field>
-              </div>
-            </div>
 
           </section>
           <footer class="modal-card-foot">
@@ -193,13 +160,7 @@ export default {
       tipoUsuario:1,
       idSeleccionado:0,
 
-      inputCedula:"",
-      inputNombres:"",
-      inputApellidos:"",
-      inputDireccion:"",
-      inputTelefono:"",
-      inputTipoInventario:1,
-      inputActivo:true,
+      inventario:null,
       //info entidad
       nombreEntidad: "Inventario",
       uri: process.env.VUE_APP_API+"inventario",
@@ -246,13 +207,25 @@ export default {
   mounted() {
     //llamados fetch
     //this.authLogin();
-    this.fetchInventarios();
+    this.resetForm();
     
     console.log("ENVENVNENVNVNENVS")
     console.log(this.titleSAs)
   },
   methods: {
-   
+    resetForm() {
+          this.inventario = {
+            nombre: "",
+            cantidad: 0,
+            descripcion: "",
+            observaciones: "",
+            activa: true
+          }
+          this.isAdd = false;
+          this.isEdit = false;
+          this.showModalCreateEdit = false;
+          this.fetchInventarios();
+      },
     fetchInventarios() {
       try {
         fetch(this.uri, {
@@ -287,93 +260,44 @@ export default {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({
-            //agregar campos a crear
-            cedula:this.inputCedula,
-            nombres:this.inputNombres,
-            apellidos:this.inputApellidos,
-            direccion:this.inputDireccion,
-            telefono:this.inputTelefono,
-            tipoInventario:this.inputTipoInventario,
-            activo:this.inputActivo,
-
-          }),
+          body: JSON.stringify(this.inventario),
         })
           .then((response) => response.json())
           .then((data) => {
             var resp = data.message;
             console.log(resp);
+            this.$buefy.dialog.alert("Registro de inventario agregado correctamente");
 
-            //encerar valores
-            this.inputCedula=""
-            this.inputNombres=""
-            this.inputApellidos=""
-            this.inputDireccion=""
-            this.inputTelefono=""
-            this.inputTipoInventario=1
-            this.inputActivo=true
-
-
-            //cerrar modal
-            this.isAdd = false;
-            this.isEdit = false;
-
-            this.showModalCreateEdit = false;
-            this.$buefy.dialog.alert("Inventario agregado correctamente");
-
-            this.fetchInventarios();
+            this.resetForm();
           });
       } else if (this.isEdit) {
+        this.inventario.id=this.idSeleccionado
+        console.log(JSON.stringify(this.inventario))
+        console.log(process.env.VUE_APP_API+"inventario/"+this.idSeleccionado)
         fetch(
-          process.env.VUE_APP_API+"Inventarios",
+          process.env.VUE_APP_API+"inventario",
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify({
-              //agregar campos editados
-              id:this.idSeleccionado,
-              cedula:this.inputCedula,
-              nombres:this.inputNombres,
-              apellidos:this.inputApellidos,
-              direccion:this.inputDireccion,
-              telefono:this.inputTelefono,
-              tipoInventario:this.inputTipoInventario,
-              activo:this.inputActivo,
-            }),
+            body: JSON.stringify(this.inventario),
           }
         )
           .then((response) => response.json())
           .then((data) => {
             var resp = data.message;
-            //limpiar campos
-            this.inputCedula=""
-            this.inputNombres=""
-            this.inputApellidos=""
-            this.inputDireccion=""
-            this.inputTelefono=""
-            this.inputTipoInventario=1
-            this.inputActivo=true
-            //this.fetchUsers();
-            this.showModalCreateEdit = false;
-            this.$buefy.dialog.alert("Inventario editado correctamente");
+            
+            
+            this.$buefy.dialog.alert("Registro de inventario editado correctamente");
             //llamar fetch
-            this.fetchInventarios();
+            this.resetForm();
           });
       }
     },
     editFunction(row) {
       //obtener valores para editar en form
-
-      this.inputCedula=row.cedula
-      this.inputNombres=row.nombres
-      this.inputApellidos=row.apellidos
-      this.inputDireccion=row.direccion
-      this.inputTelefono=row.telefono
-      this.inputTipoInventario=row.tipoInventario
-      this.inputActivo=row.activo
-      this.idSeleccionado = row.id;
-
+      this.idSeleccionado=row.id
+      this.inventario=row
       //mostrar modal
       this.showModalCreateEdit = true;
       this.isAdd = false;
@@ -381,7 +305,8 @@ export default {
     },
     deleteFunction(row) {
       const idDel = row.id;
-      fetch(process.env.VUE_APP_API+"Inventarios/" + idDel.toString(), {
+      console.log(process.env.VUE_APP_API+"Inventarios/" + idDel.toString())
+      fetch(process.env.VUE_APP_API+"Inventario/" + idDel.toString(), {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -390,18 +315,12 @@ export default {
         .then((data) => {
           var resp = data.message;
           //limpiar campos form
-          this.selected = null;
-          this.isAdd = false;
-          this.isEdit = false;
-          this.username = "";
-          this.email = "";
-          this.password = "";
-          this.password2 = "";
+          
 
-          this.showModalCreateEdit = false;
+          
           this.$buefy.dialog.alert("Inventario eliminado correctamente");
           //llamar fetch
-          this.fetchInventarios();
+          this.resetForm();
         });
     },
   },
