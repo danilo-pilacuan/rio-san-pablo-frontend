@@ -30,6 +30,9 @@ aside.aside {
       //margin-right: $default-padding * .5;
     }
   }
+  .menu-list a.is-active{
+    background-color: #1a76c6 !important;
+  }
 
   .menu-list {
     @include icon-with-update-mark($aside-icon-width);
@@ -39,6 +42,7 @@ aside.aside {
     }
 
     li.is-active {
+      background-color: #1a76c6;
       ul {
         display: block;
       }
@@ -73,6 +77,7 @@ aside.aside {
               padding-left: 0;
             }
             &.is-active {
+              background-color: #1a76c6;
               &:not(:hover) {
                 background: transparent;
               }

@@ -92,6 +92,55 @@ const routes = [
     name: 'aportes',
     component: () => import('@/views/Aportes.vue')
   },
+  {
+    meta: {
+      title: 'Aportes'
+    },
+    path: '/aportes/:id',
+    name: 'aportes',
+    component: () => import('@/views/Aportes.vue')
+  },
+  {
+    meta: {
+      title: 'Reportes'
+    },
+    path: '/reportes',
+    name: 'reportes',
+    component: () => import('@/views/Reportes.vue')
+  },
+  {
+    meta: {
+      title: 'Rutas'
+    },
+    path: '/rutas',
+    name: 'rutas',
+    component: () => import('@/views/Rutas.vue')
+  },
+  {
+    meta: {
+      title: 'Horarios'
+    },
+    path: '/horarios',
+    name: 'horarios',
+    component: () => import('@/views/Horarios.vue')
+  },
+  // {
+  //   meta: {
+  //     title: 'Tarjetas'
+  //   },
+  //   path: '/tarjetas',
+  //   name: 'tarjetas',
+  //   component: () => import('@/views/Tarjetas.vue')
+  // },
+  {
+    meta: {
+      title: 'Tarjetas'
+    },
+    path: '/tarjetas/:id',
+    name: 'tarjetas',
+    component: () => import('@/views/Tarjetas.vue')
+  },
+
   //fin rutas cruds
   {
     path: '/full-page',

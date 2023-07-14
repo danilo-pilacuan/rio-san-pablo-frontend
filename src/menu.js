@@ -25,11 +25,11 @@ export default [
       icon: 'book-open-page-variant'
     },
     
-    {
-      to: '/aportes',
-      label: 'Aportes',
-      icon: 'square-inc-cash'
-    },
+    // {
+    //   to: '/aportes',
+    //   label: 'Aportes',
+    //   icon: 'square-inc-cash'
+    // },
     
     {
       to: '/socios',

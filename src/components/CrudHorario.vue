@@ -1,7 +1,7 @@
 <template>
   <div id="users" class="home">
     <hero-bar>
-      Socios
+      horarios
       <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button>
     </hero-bar>
     <div class="container ml-1 mr-1" style="max-width: 100%">
@@ -25,92 +25,47 @@
           :paginated="true"
           :per-page="20"
         >
-          <b-table-column
-            v-slot="props"
-            label="Cédula"
-            field="cedula"
-            searchable
-          >
-            {{ props.row.cedula }}
-          </b-table-column>
-          <b-table-column
-            v-slot="props"
-            label="Nombres"
-            field="nombres"
-            searchable
-          >
-            {{ props.row.nombres }}
-          </b-table-column>
-          <b-table-column
-            v-slot="props"
-            label="Apellidos"
-            field="apellidos"
-            searchable
-          >
-            {{ props.row.apellidos }}
-          </b-table-column>
-          <b-table-column
-            v-slot="props"
-            label="Dirección"
-            field="direccion"
-            searchable
-          >
-            {{ props.row.direccion }}
-          </b-table-column>
-          <b-table-column
-            v-slot="props"
-            label="Teléfono"
-            field="telefono"
-            searchable
-          >
-            {{ props.row.telefono }}
-          </b-table-column>
-          <b-table-column
-            v-slot="props"
-            label="Tipo Socio"
-            field="tipoSocio"
-            searchable
-          >
-            {{ props.row.tipoSocio }}
-          </b-table-column>
-
-          <b-table-column
-            v-slot="props"
-            label="Activo"
-            field="activo"
-            searchable
-          >
-            {{ props.row.activo?"Si":"No" }}
-          </b-table-column>
-          
-
-          <b-table-column field="actions" label="Acciones" v-slot="props">
-            <div class="buttons" style="display: flex; flex-wrap: inherit;">
-            <b-button
-                rounded
-                type="is-link"
-                icon-left="eye"
-                @click="verFicha(props.row)"
+          <template v-for="column in columns">
+            <b-table-column :key="column.id" v-bind="column">
+              <template
+                v-if="column.searchable && !column.numeric"
+                #searchable="props"
               >
-              </b-button>
-
-
+                <b-input
+                  v-model="props.filters[props.column.field]"
+                  placeholder="Buscar..."
+                  icon="magnify"
+                  size="is-small"
+                />
+              </template>
+              <template v-slot="props">
+                <div v-if="typeof props.row[column.field] === 'object'">
+                  {{ props.row[column.field][column.subField] }}
+                </div>
+                <div v-else>
+                  {{ props.row[column.field] }}
+                </div>
+              </template>
+            </b-table-column>
+          </template>
+          <b-table-column field="actions" label="Acciones" v-slot="props">
+            <div class="buttons">
+              <slot name="addButtons"></slot>
               <b-button
                 rounded
                 type="is-warning"
                 icon-left="pencil"
                 @click="editFunction(props.row)"
                 :disabled="tipoUsuario==2"
-              >
-              </b-button>
+              />
               <b-button
                 rounded
                 type="is-danger"
                 icon-left="delete"
                 @click="deleteFunction(props.row)"
                 :disabled="tipoUsuario==2"
-              >
-              </b-button>
+              />
+              
             </div>
           </b-table-column>
         </b-table>
@@ -172,8 +127,8 @@
 
             <div class="columns">
               <div class="column">
-                <b-field label="Tipo Socio">
-                  <b-select placeholder="Tipo Socio" v-model="inputTipoSocio">
+                <b-field label="Tipo horario">
+                  <b-select placeholder="Tipo horario" v-model="inputTipohorario">
                     
                     <option value="1">Chofer</option>
                     <option value="2">Controlador</option>
@@ -242,15 +197,62 @@ export default {
       inputApellidos:"",
       inputDireccion:"",
       inputTelefono:"",
-      inputTipoSocio:1,
+      inputTipohorario:1,
       inputActivo:true,
       //info entidad
-      nombreEntidad: "Socio",
-      uri: process.env.VUE_APP_API+"socios",
+      nombreEntidad: "horario",
+      uri: process.env.VUE_APP_API+"horario",
       //tablas Datos
       tablaDatos: [],
       //columnas tabla Datos
-
+      columns: [
+        
+        {
+          field: "Num Disco",
+          label: "numDisco",
+          searchable: true,
+        },
+        {
+          field: "cantidad",
+          label: "Cantidad",
+          searchable: true,
+        },
+        {
+          field: "tarjetaActual",
+          label: "Tarjeta Actual",
+          searchable: true,
+        },
+        {
+          field: "adicional",
+          label: "Adicional",
+          searchable: true,
+        },
+        {
+          field: "otros",
+          label: "Otros",
+          searchable: true,
+        },
+        {
+          field: "mcAct",
+          label: "Mc Act",
+          searchable: true,
+        },
+        {
+          field: "mcAnt",
+          label: "Mc Ant",
+          searchable: true,
+        },
+        {
+          field: "multas",
+          label: "Multas",
+          searchable: true,
+        },
+        {
+          field: "total",
+          label: "Total",
+          searchable: true,
+        },
+      ],
       //tablas auxiliares
 
       //auxiliares modal
@@ -268,12 +270,14 @@ export default {
   mounted() {
     //llamados fetch
     //this.authLogin();
-    this.fetchSocios();
-  
+    this.fetchhorarios();
+    
+    console.log("ENVENVNENVNVNENVS")
+    console.log(this.titleSAs)
   },
   methods: {
    
-    fetchSocios() {
+    fetchhorarios() {
       try {
         fetch(this.uri, {
           method: "GET",
@@ -303,7 +307,7 @@ export default {
     },
     submit() {
       if (this.isAdd) {
-        fetch(process.env.VUE_APP_API+"Socios", {
+        fetch(process.env.VUE_APP_API+"horario", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -314,7 +318,7 @@ export default {
             apellidos:this.inputApellidos,
             direccion:this.inputDireccion,
             telefono:this.inputTelefono,
-            tipoSocio:this.inputTipoSocio,
+            tipohorario:this.inputTipohorario,
             activo:this.inputActivo,
 
           }),
@@ -330,7 +334,7 @@ export default {
             this.inputApellidos=""
             this.inputDireccion=""
             this.inputTelefono=""
-            this.inputTipoSocio=1
+            this.inputTipohorario=1
             this.inputActivo=true
 
 
@@ -339,13 +343,13 @@ export default {
             this.isEdit = false;
 
             this.showModalCreateEdit = false;
-            this.$buefy.dialog.alert("Socio agregado correctamente");
+            this.$buefy.dialog.alert("horario agregado correctamente");
 
-            this.fetchSocios();
+            this.fetchhorarios();
           });
       } else if (this.isEdit) {
         fetch(
-          process.env.VUE_APP_API+"Socios",
+          process.env.VUE_APP_API+"horarios",
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -358,7 +362,7 @@ export default {
               apellidos:this.inputApellidos,
               direccion:this.inputDireccion,
               telefono:this.inputTelefono,
-              tipoSocio:this.inputTipoSocio,
+              tipohorario:this.inputTipohorario,
               activo:this.inputActivo,
             }),
           }
@@ -372,13 +376,13 @@ export default {
             this.inputApellidos=""
             this.inputDireccion=""
             this.inputTelefono=""
-            this.inputTipoSocio=1
+            this.inputTipohorario=1
             this.inputActivo=true
             //this.fetchUsers();
             this.showModalCreateEdit = false;
-            this.$buefy.dialog.alert("Socio editado correctamente");
+            this.$buefy.dialog.alert("horario editado correctamente");
             //llamar fetch
-            this.fetchSocios();
+            this.fetchhorarios();
           });
       }
     },
@@ -390,7 +394,7 @@ export default {
       this.inputApellidos=row.apellidos
       this.inputDireccion=row.direccion
       this.inputTelefono=row.telefono
-      this.inputTipoSocio=row.tipoSocio
+      this.inputTipohorario=row.tipohorario
       this.inputActivo=row.activo
       this.idSeleccionado = row.id;
 
@@ -401,7 +405,7 @@ export default {
     },
     deleteFunction(row) {
       const idDel = row.id;
-      fetch(process.env.VUE_APP_API+"Socios/" + idDel.toString(), {
+      fetch(process.env.VUE_APP_API+"horarios/" + idDel.toString(), {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -419,9 +423,9 @@ export default {
           this.password2 = "";
 
           this.showModalCreateEdit = false;
-          this.$buefy.dialog.alert("Socio eliminado correctamente");
+          this.$buefy.dialog.alert("horario eliminado correctamente");
           //llamar fetch
-          this.fetchSocios();
+          this.fetchhorarios();
         });
     },
   },

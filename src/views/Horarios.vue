@@ -3,14 +3,14 @@
     <SecurityComponent />
     <title-bar :title-stack="titleStack" />
     <section class="section is-main-section">
-      <CrudReporte />
+      <CrudHorario />
     </section>
   </div>
 </template>
 
 <script>
 import Notification from "@/components/Notification.vue";
-import CrudReporte from "@/components/CrudReporte.vue";
+import CrudHorario from "@/components/CrudHorario.vue";
 import TitleBar from "@/components/TitleBar.vue";
 import SecurityComponent from "@/components/SecurityComponent.vue"
 export default {
@@ -18,12 +18,12 @@ export default {
   components: {
     TitleBar,
     Notification,
-    CrudReporte,
+    CrudHorario,
     SecurityComponent
   },
   data() {
     return {
-        titleStack : ['Administración','Reporte']
+        titleStack : ['Administración','Horario']
     };
   },
   methods:{
