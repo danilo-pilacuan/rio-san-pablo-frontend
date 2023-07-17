@@ -279,7 +279,7 @@ export default {
       },
       fetchAportes() {
           try {
-              fetch(this.baseUri, {
+              fetch(this.baseUri+"/byIdReporte/"+this.$route.params.id, {
                   method: "GET",
                   headers: { "Content-Type": "application/json" },
                   credentials: "include",

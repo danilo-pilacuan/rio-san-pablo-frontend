@@ -11,21 +11,21 @@
           class="tile is-child"
           type="is-primary"
           icon="account-multiple"
-          :number="numUsuarios"
+          :number="numSocios"
           label="Socios"
         />
         <card-widget
           class="tile is-child"
           type="is-link"
           icon="bus"
-          :number="numActivos"
+          :number="numUnidades"
           label="Unidades"
         />
         <card-widget
           class="tile is-child"
           type="is-warning"
           icon="table"
-          :number="numOrdenes"
+          :number="numRutas"
           label="Rutas"
         />
       </tiles>
@@ -34,26 +34,26 @@
           class="tile is-child"
           type="is-success"
           icon="clock"
-          :number="numUsuarios"
+          :number="numHorarios"
           label="Horarios"
         />
         <card-widget
           class="tile is-child"
           type="is-info"
           icon="square-inc-cash"
-          :number="numActivos"
+          :number="numAportes"
           label="Aportaciones"
         />
         <card-widget
           class="tile is-child"
           type="is-danger"
           icon="chart-timeline-variant"
-          :number="numOrdenes"
+          :number="numReportes"
           label="Reportes"
         />
       </tiles>
 
-      <card-component
+      <!-- <card-component
         title="Rendimiento General"
         icon="finance" 
       >
@@ -67,7 +67,7 @@
             :style="{height: '40%'}"
           />
         </div>
-      </card-component>
+      </card-component> -->
 
      
     </section>
@@ -103,14 +103,19 @@ export default {
   },
   data() {
     return {
-      tablaUsuarios:null,
-      tablaActivos:null,
-      tablaOrdenes:null,
-      chartData: null,
+      tablaUnidades:[],
+      tablaSocios:[],
+      tablaRutas:[],
+      tablaHorarios:[],
+      tablaAportes:[],
+      tablaReportes:[],
 
-      numUsuarios:0,
-      numActivos:0,
-      numOrdenes:0,
+      numUnidades:0,
+      numSocios:0,
+      numRutas:0,
+      numHorarios:0,
+      numAportes:0,
+      numReportes:0,
 
 
       titleStack:['Admin', 'Inicio'],
@@ -136,12 +141,53 @@ export default {
 methods: {
     fillChartData () {
       this.chartData = chartConfig.sampleChartData()
+    },
+    fetchUnidades() {
+      try {
+        fetch(process.env.VUE_APP_API+"unidads", { method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include", })
+          .then((response) => response.json()) .then((data) => { if (data) { this.tablaUnidades = data["data"]; this.numUnidades=this.tablaUnidades.length} else { this.tablaUnidades = []; } });
+      } catch (e) { }
+    },
+    fetchSocios() {
+      try {
+        fetch(process.env.VUE_APP_API+"socios", { method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include", })
+          .then((response) => response.json()) .then((data) => { if (data) { this.tablaSocios = data["data"]; this.numSocios=this.tablaSocios.length } else { this.tablaSocios = []; } });
+      } catch (e) { }
+    },
+    fetchRutas() {
+      try {
+        fetch(process.env.VUE_APP_API+"rutas", { method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include", })
+          .then((response) => response.json()) .then((data) => { if (data) { this.tablaRutas = data["data"]; this.numRutas=this.tablaRutas.length} else { this.tablaRutas = []; } });
+      } catch (e) { }
+    },
+    fetchHorarios() {
+      try {
+        fetch(process.env.VUE_APP_API+"unidads", { method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include", })
+          .then((response) => response.json()) .then((data) => { if (data) { this.tablaHorarios = data["data"]; this.numHorarios=this.tablaHorarios.length} else { this.tablaHorarios = []; } });
+      } catch (e) { }
+    },
+    fetchAportaciones() {
+      try {
+        fetch(process.env.VUE_APP_API+"aportes", { method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include", })
+          .then((response) => response.json()) .then((data) => { if (data) { this.tablaAportes = data["data"]; this.numAportes=this.tablaAportes.length} else { this.tablaAportes = []; } });
+      } catch (e) { }
+    },
+    fetchReportes() {
+      try {
+        fetch(process.env.VUE_APP_API+"reportes", { method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include", })
+          .then((response) => response.json()) .then((data) => { if (data) { this.tablaReportes = data["data"]; this.numReportes=this.tablaReportes.length} else { this.tablaReportes = []; } });
+      } catch (e) { }
     }
     
 },
 mounted() {
   this.fillChartData()
-
+  this.fetchUnidades()
+this.fetchSocios()
+this.fetchRutas()
+this.fetchHorarios()
+this.fetchAportaciones()
+this.fetchReportes()
   },
   
 }

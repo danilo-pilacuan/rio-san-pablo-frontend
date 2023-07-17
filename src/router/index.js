@@ -124,6 +124,22 @@ const routes = [
     name: 'horarios',
     component: () => import('@/views/Horarios.vue')
   },
+  {
+    meta: {
+      title: 'Imprimir'
+    },
+    path: '/imprimir',
+    name: 'imprimir',
+    component: () => import('@/views/Imprimir.vue')
+  },
+  {
+    meta: {
+      title: 'Imprimir'
+    },
+    path: '/imprimir/:id',
+    name: 'imprimir',
+    component: () => import('@/components/ImprimirReporte.vue')
+  },
   // {
   //   meta: {
   //     title: 'Tarjetas'

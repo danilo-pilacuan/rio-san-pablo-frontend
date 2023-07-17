@@ -48,7 +48,7 @@ export default [
       icon: 'warehouse'
     },
     {
-      to: '/Contabilidad',
+      to: '/imprimir',
       label: 'Imprimir',
       icon: 'printer'
     },

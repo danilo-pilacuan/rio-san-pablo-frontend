@@ -31,12 +31,9 @@
                             <slot name="addButtons"></slot>
                             <!-- <b-button rounded type="is-warning" icon-left="pencil" @click="editFunction(props.row)"
                                 :disabled="tipoUsuario == 2"/> -->
-                            <b-button rounded type="is-link" icon-left="eye" label="Tarjetas"
+                            <b-button rounded type="is-link" icon-left="printer" label="Imprimir"
                                 @click="$router.push('/tarjetas/' + props.row.id)" :disabled="tipoUsuario == 2" />
-                            <b-button rounded type="is-primary" icon-left="eye" label="Aportes"
-                                @click="$router.push('/aportes/' + props.row.id)" :disabled="tipoUsuario == 2" />
-                            <b-button rounded type="is-danger" icon-left="delete" label="Borrar"
-                                @click="deleteFunction(props.row)" :disabled="tipoUsuario == 2" />
+                           
                         </div>
                     </b-table-column>
                 </b-table>

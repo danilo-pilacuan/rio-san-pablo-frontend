@@ -202,7 +202,8 @@ export default {
         idUnidad:0,
         idRuta:0,
         idChofer:0,
-        idControlador:0
+        idControlador:0,
+        reporteId:0
       },
       //info entidad
       nombreEntidad: "Tarjeta",
@@ -255,7 +256,8 @@ export default {
         idUnidad:0,
         idRuta:0,
         idChofer:0,
-        idControlador:0
+        idControlador:0,
+        reporteId:this.$route.params.id,
         }
         this.isAdd = false;
         this.isEdit = false;
@@ -264,7 +266,7 @@ export default {
     },
     fetchTarjetas() {
       try {
-        fetch(this.uri, {
+        fetch(this.uri+"/byIdReporte/"+this.$route.params.id, {
           method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include",
         })
           .then((response) => response.json()) .then((data) => {
