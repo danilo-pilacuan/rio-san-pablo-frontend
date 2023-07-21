@@ -2,7 +2,7 @@
     <div id="users" class="home">
         <hero-bar>
             Reportes Diarios
-            <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button>
+            <!-- <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button> -->
         </hero-bar>
         <div class="container ml-1 mr-1" style="max-width: 100%">
             <div class="block">
@@ -32,7 +32,7 @@
                             <!-- <b-button rounded type="is-warning" icon-left="pencil" @click="editFunction(props.row)"
                                 :disabled="tipoUsuario == 2"/> -->
                             <b-button rounded type="is-link" icon-left="printer" label="Imprimir"
-                                @click="$router.push('/tarjetas/' + props.row.id)" :disabled="tipoUsuario == 2" />
+                                @click="$router.push('/imprimir/' + props.row.id)" :disabled="tipoUsuario == 2" />
                            
                         </div>
                     </b-table-column>
@@ -284,4 +284,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+@media print {
+  /* Contenido del fichero print.css */
+  .level-right
+  {
+    display: none;
+  }
+}
+</style>

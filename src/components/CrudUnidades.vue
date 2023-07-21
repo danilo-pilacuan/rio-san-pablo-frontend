@@ -215,6 +215,7 @@ export default {
       inputPlaca:"",
       inputDescripcion:"",
       inputActivo:true,
+      urlFotoUnidad:"",
 
       //info entidad
       nombreEntidad: "Unidad",
@@ -236,7 +237,7 @@ export default {
       
       columns: [
         
-        { field: "placa", label: "Fecha", searchable: true, },
+        { field: "placa", label: "Placa", searchable: true, },
         { field: "descripcion", label: "Descripción", searchable: true, },
         { field: "observaciones", label: "Estado Técnico", searchable: true, }, 
         { field: "activo", label: "Activo", searchable: true, }, 
@@ -296,7 +297,7 @@ export default {
             placa:this.inputPlaca,
             descripcion:this.inputDescripcion,
             activo:this.inputActivo,
-
+            urlFotoUnidad:this.urlFotoUnidad
 
           }),
         })
@@ -310,6 +311,7 @@ export default {
             this.inputPlaca=""
             this.inputDescripcion=""
             this.inputActivo=true
+            this.urlFotoUnidad=""
 
 
             //cerrar modal
@@ -335,6 +337,7 @@ export default {
               placa:this.inputPlaca,
               descripcion:this.inputDescripcion,
               activo:this.inputActivo,
+              urlFotoUnidad:this.urlFotoUnidad
             }),
           }
         )

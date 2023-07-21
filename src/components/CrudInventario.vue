@@ -1,8 +1,9 @@
 <template>
   <div id="users" class="home">
     <hero-bar>
-      Inventarios
-      <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button>
+      Inventario de Oficina
+      <b-button slot="right" class="m-3 noPrint" type="is-link" @click="printFunction">Imprimir</b-button>
+      <b-button slot="right" class="noPrint" type="is-primary" @click="createFunction">Crear</b-button>
     </hero-bar>
     <div class="container ml-1 mr-1" style="max-width: 100%">
         
@@ -37,6 +38,7 @@
                   placeholder="Buscar..."
                   icon="magnify"
                   size="is-small"
+                  class="noPrint"
                 />
               </template>
               <template v-slot="props">
@@ -49,8 +51,8 @@
               </template>
             </b-table-column>
           </template>
-          <b-table-column field="actions" label="Acciones" v-slot="props">
-            <div class="buttons">
+          <b-table-column field="actions" label="Acciones" v-slot="props" cell-class="noPrint" header-class="noPrint">
+            <div class="buttons noPrint">
               <slot name="addButtons"></slot>
               <b-button
                 rounded
@@ -213,6 +215,9 @@ export default {
     console.log(this.titleSAs)
   },
   methods: {
+    printFunction() {
+            window.print();
+        },
     resetForm() {
           this.inventario = {
             nombre: "",
@@ -328,4 +333,11 @@ export default {
 </script>
 
 <style>
+@media print{
+  .noPrint { display: none !important; }
+  .level-right
+  {
+    display: none;
+  }
+}
 </style>

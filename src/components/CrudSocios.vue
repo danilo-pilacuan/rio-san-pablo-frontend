@@ -274,6 +274,7 @@ export default {
       inputTelefono:"",
       inputTipoSocio:1,
       inputActivo:true,
+      urlFotoSocio:"",
       //info entidad
       nombreEntidad: "Socio",
       uri: process.env.VUE_APP_API+"socios",
@@ -356,7 +357,7 @@ export default {
             telefono:this.inputTelefono,
             tipoSocio:this.inputTipoSocio,
             activo:this.inputActivo,
-
+            urlFotoSocio:this.urlFotoSocio
           }),
         })
           .then((response) => response.json())
@@ -400,6 +401,7 @@ export default {
               telefono:this.inputTelefono,
               tipoSocio:this.inputTipoSocio,
               activo:this.inputActivo,
+              urlFotoSocio:this.urlFotoSocio
             }),
           }
         )

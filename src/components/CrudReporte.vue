@@ -2,7 +2,8 @@
     <div id="users" class="home">
         <hero-bar>
             Reportes Diarios
-            <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button>
+            <b-button slot="right" class="noPrint m-2" type="is-link" @click="printFunction">Imprimir</b-button>
+            <b-button slot="right" class="noPrint" type="is-primary" @click="createFunction">Crear</b-button>
         </hero-bar>
         <div class="container ml-1 mr-1" style="max-width: 100%">
             <div class="block">
@@ -26,7 +27,7 @@
                             </template>
                         </b-table-column>
                     </template>
-                    <b-table-column field="actions" label="Acciones" v-slot="props">
+                    <b-table-column field="actions" label="Acciones" v-slot="props" cell-class="noPrint" header-class="noPrint">
                         <div class="buttons">
                             <slot name="addButtons"></slot>
                             <!-- <b-button rounded type="is-warning" icon-left="pencil" @click="editFunction(props.row)"
@@ -169,6 +170,9 @@ export default {
         this.resetForm();
     },
     methods: {
+        printFunction() {
+            window.print();
+        },
         resetForm() {
             this.reporte = {
                 id: 0,
