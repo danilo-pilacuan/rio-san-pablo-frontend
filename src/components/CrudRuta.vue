@@ -2,6 +2,7 @@
   <div id="users" class="home">
       <hero-bar>
           Rutas
+          <b-button slot="right" class="m-2 noPrint" type="is-link" @click="globalPrint">Imprimir</b-button>
           <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button>
       </hero-bar>
       <div class="container ml-1 mr-1" style="max-width: 100%">
@@ -26,7 +27,7 @@
                           </template>
                       </b-table-column>
                   </template>
-                  <b-table-column field="actions" label="Acciones" v-slot="props">
+                  <b-table-column field="actions" label="Acciones" v-slot="props" cell-class="noPrint" header-class="noPrint">
                       <div class="buttons">
                           <slot name="addButtons"></slot>
                           <b-button rounded type="is-warning" icon-left="pencil" @click="editFunction(props.row)"
@@ -324,4 +325,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+@media print{
+  .noPrint { display: none !important; }
+  .level-right
+  {
+    display: none;
+  }
+}
+</style>

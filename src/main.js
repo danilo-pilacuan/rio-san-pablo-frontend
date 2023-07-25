@@ -12,6 +12,7 @@ import store from './store'
 
 /* Vue. Main component */
 import App from './App.vue'
+import VeeValidate from 'vee-validate';
 
 /* Composition API */
 Vue.use(VueCompositionAPI)
@@ -34,6 +35,18 @@ router.afterEach(to => {
 })
 
 Vue.config.productionTip = false
+
+const PrintPlugin = {
+  install(Vue, options) {
+    Vue.prototype.globalPrint = () => {
+      window.print();
+    }
+  },
+}
+Vue.use(PrintPlugin)
+Vue.use(VeeValidate);
+
+
 
 Vue.use(Buefy)
 

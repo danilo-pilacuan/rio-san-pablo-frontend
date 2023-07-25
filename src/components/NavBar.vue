@@ -193,20 +193,23 @@ export default {
       //   queue: false
       // })
 
-      try {
-        fetch(process.env.VUE_APP_TITLE+"API/usuarios/logout", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            router.push('/login')
-          });
-      } catch (e) {
-        //this.$store.dispatch("setAuth", false);
-      }
-
+      // try {
+      //   fetch(process.env.VUE_APP_TITLE+"API/usuarios/logout", {
+      //     method: "GET",
+      //     headers: { "Content-Type": "application/json" },
+      //     credentials: "include",
+      //   })
+      //     .then((response) => response.json())
+      //     .then((data) => {
+      //       router.push('/login')
+      //     });
+      // } catch (e) {
+      //   //this.$store.dispatch("setAuth", false);
+      // }
+        
+      store.dispatch("setUser", null);
+      store.dispatch("setAuth", false);
+      router.push('/login')
     }
 
     return {

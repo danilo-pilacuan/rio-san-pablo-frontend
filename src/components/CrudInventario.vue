@@ -2,7 +2,7 @@
   <div id="users" class="home">
     <hero-bar>
       Inventario de Oficina
-      <b-button slot="right" class="m-3 noPrint" type="is-link" @click="printFunction">Imprimir</b-button>
+      <b-button slot="right" class="m-2 noPrint" type="is-link" @click="globalPrint">Imprimir</b-button>
       <b-button slot="right" class="noPrint" type="is-primary" @click="createFunction">Crear</b-button>
     </hero-bar>
     <div class="container ml-1 mr-1" style="max-width: 100%">
@@ -152,6 +152,7 @@
 
 <script>
 import HeroBar from '@/components/HeroBar.vue'
+import axios from "axios";
 
 export default {
     components: {
@@ -215,9 +216,6 @@ export default {
     console.log(this.titleSAs)
   },
   methods: {
-    printFunction() {
-            window.print();
-        },
     resetForm() {
           this.inventario = {
             nombre: "",
@@ -232,26 +230,42 @@ export default {
           this.fetchInventarios();
       },
     fetchInventarios() {
-      try {
-        fetch(this.uri, {
-          method: "GET",
-          headers: { "Content-Type": "application/json"},
-          credentials: "include",
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            var resp = data;
 
-            if (data) {
-              this.tablaDatos = data["data"];
-            } else {
-              //this.$router.push("/login")
-              this.tablaDatos = [];
-            }
-          });
-      } catch (e) {
-        //this.$store.dispatch("setAuth", false);
-      }
+      axios
+      .get(this.uri)
+      .then(response => (this.tablaDatos = response.data["data"]))
+      .catch(error => console.log(error))
+
+      
+
+      // try {
+      //   fetch(this.uri, {
+      //     method: "GET",
+      //     headers: { 
+      //       Accept:"application/json, text/plain, */*",
+      //       "Accept-Encoding":"gzip, deflate",
+      //       "Accept-Language":"en-US,en;q=0.9,es;q=0.8",
+      //       Connection:"keep-alive",
+      //       Host:"20.62.195.253:3000",
+      //       Origin:"http://localhost:8080",
+      //       Referer:"http://localhost:8080/",
+      //     },
+      //     credentials: "include",
+      //   })
+      //     .then((response) => response.json())
+      //     .then((data) => {
+      //       var resp = data;
+
+      //       if (data) {
+      //         this.tablaDatos = data["data"];
+      //       } else {
+      //         //this.$router.push("/login")
+      //         this.tablaDatos = [];
+      //       }
+      //     });
+      // } catch (e) {
+      //   //this.$store.dispatch("setAuth", false);
+      // }
     },
 
 

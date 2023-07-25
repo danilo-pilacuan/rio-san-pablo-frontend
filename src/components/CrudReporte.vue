@@ -2,7 +2,7 @@
     <div id="users" class="home">
         <hero-bar>
             Reportes Diarios
-            <b-button slot="right" class="noPrint m-2" type="is-link" @click="printFunction">Imprimir</b-button>
+            <b-button slot="right" class="noPrint m-2" type="is-link" @click="globalPrint">Imprimir</b-button>
             <b-button slot="right" class="noPrint" type="is-primary" @click="createFunction">Crear</b-button>
         </hero-bar>
         <div class="container ml-1 mr-1" style="max-width: 100%">
@@ -170,9 +170,6 @@ export default {
         this.resetForm();
     },
     methods: {
-        printFunction() {
-            window.print();
-        },
         resetForm() {
             this.reporte = {
                 id: 0,
@@ -291,4 +288,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+@media print{
+  .noPrint { display: none !important; }
+  .level-right
+  {
+    display: none;
+  }
+}
+</style>

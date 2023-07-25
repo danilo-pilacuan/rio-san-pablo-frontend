@@ -2,6 +2,7 @@
   <div id="users" class="home">
       <hero-bar>
           Aportes
+          <b-button slot="right" class="m-2 noPrint" type="is-link" @click="globalPrint">Imprimir</b-button>
           <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button>
       </hero-bar>
       <div class="container ml-1 mr-1" style="max-width: 100%">
@@ -28,7 +29,7 @@
                           </template>
                       </b-table-column>
                   </template>
-                  <b-table-column field="actions" label="Acciones" v-slot="props">
+                  <b-table-column field="actions" label="Acciones" v-slot="props" cell-class="noPrint" header-class="noPrint">
                       <div class="buttons">
                           <slot name="addButtons"></slot>
                           <!-- <b-button rounded type="is-warning" icon-left="pencil" @click="editFunction(props.row)"
@@ -163,7 +164,7 @@
 
 <script>
 import HeroBar from '@/components/HeroBar.vue'
-
+import axios from "axios";
 export default {
   components: {
       HeroBar
@@ -278,47 +279,64 @@ export default {
           this.fetchAportes();
       },
       fetchAportes() {
-          try {
-              fetch(this.baseUri+"/byIdReporte/"+this.$route.params.id, {
-                  method: "GET",
-                  headers: { "Content-Type": "application/json" },
-                  credentials: "include",
-              })
-                  .then((response) => response.json())
-                  .then((data) => {
-                      if (data) {
-                          this.tablaDatos = data["data"];
-                      } else {
-                          //this.$router.push("/login")
-                          this.tablaDatos = [];
-                      }
-                  });
-          } catch (e) {
-              //this.$store.dispatch("setAuth", false);
-          }
+        axios
+      .get(this.baseUri+"/byIdReporte/"+this.$route.params.id)
+      .then(response => (this.tablaDatos = response.data["data"]))
+      .catch(error => console.log(error))
+
+        //   try {
+        //       fetch(this.baseUri+"/byIdReporte/"+this.$route.params.id, {
+        //           method: "GET",
+        //           headers: { "Content-Type": "application/json" },
+        //           credentials: "include",
+        //       })
+        //           .then((response) => response.json())
+        //           .then((data) => {
+        //               if (data) {
+        //                   this.tablaDatos = data["data"];
+        //               } else {
+        //                   //this.$router.push("/login")
+        //                   this.tablaDatos = [];
+        //               }
+        //           });
+        //   } catch (e) {
+        //       //this.$store.dispatch("setAuth", false);
+        //   }
       },
       fetchTarjetas() {
-      try {
-        fetch(process.env.VUE_APP_API+"tarjetas", {
-          method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include",
-        })
-          .then((response) => response.json()) .then((data) => {
-            if (data) {
-              this.tablaTarjetas = data["data"];
-            } else {
-              this.tablaTarjetas = [];
-            }
-          });
-      } catch (e) {
+
+        axios
+      .get(process.env.VUE_APP_API+"tarjetas")
+      .then(response => (this.tablaTarjetas = response.data["data"]))
+      .catch(error => console.log(error))
+
+    //   try {
+    //     fetch(process.env.VUE_APP_API+"tarjetas", {
+    //       method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include",
+    //     })
+    //       .then((response) => response.json()) .then((data) => {
+    //         if (data) {
+    //           this.tablaTarjetas = data["data"];
+    //         } else {
+    //           this.tablaTarjetas = [];
+    //         }
+    //       });
+    //   } catch (e) {
         
-      }
+    //   }
     },
 
     fetchSocios() {
-      try {
-        fetch(process.env.VUE_APP_API+"socios", { method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include", })
-          .then((response) => response.json()) .then((data) => { if (data) { this.tablaSocios = data["data"]; } else { this.tablaSocios = []; } });
-      } catch (e) { }
+
+        axios
+      .get(process.env.VUE_APP_API+"socios")
+      .then(response => (this.tablaSocios  = response.data["data"]))
+      .catch(error => console.log(error))
+
+    //   try {
+    //     fetch(process.env.VUE_APP_API+"socios", { method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include", })
+    //       .then((response) => response.json()) .then((data) => { if (data) { this.tablaSocios = data["data"]; } else { this.tablaSocios = []; } });
+    //   } catch (e) { }
     },
 
       createFunction() {
@@ -399,4 +417,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+@media print{
+  .noPrint { display: none !important; }
+  .level-right
+  {
+    display: none;
+  }
+}
+</style>

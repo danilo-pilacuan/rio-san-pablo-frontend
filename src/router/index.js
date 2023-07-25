@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home.vue'
+import store from '@/store'
+
 
 Vue.use(VueRouter)
 
@@ -34,14 +36,14 @@ const routes = [
     name: 'forms',
     component: () => import('@/views/Forms.vue')
   },
-  {
-    meta: {
-      title: 'Profile'
-    },
-    path: '/profile',
-    name: 'profile',
-    component: () => import(/* webpackChunkName: "profile" */ '@/views/Profile.vue')
-  },
+  // {
+  //   meta: {
+  //     title: 'Profile'
+  //   },
+  //   path: '/profile',
+  //   name: 'profile',
+  //   component: () => import(/* webpackChunkName: "profile" */ '@/views/Profile.vue')
+  // },
   {
     meta: {
       title: 'New Client'
@@ -97,7 +99,7 @@ const routes = [
       title: 'Aportes'
     },
     path: '/aportes/:id',
-    name: 'aportes',
+    name: 'aportesbyid',
     component: () => import('@/views/Aportes.vue')
   },
   {
@@ -137,7 +139,7 @@ const routes = [
       title: 'Imprimir'
     },
     path: '/imprimir/:id',
-    name: 'imprimir',
+    name: 'imprimirbyid',
     component: () => import('@/components/ImprimirReporte.vue')
   },
   // {
@@ -177,6 +179,7 @@ const routes = [
 
 const router = new VueRouter({
   routes,
+  mode:'history',
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition
@@ -184,6 +187,28 @@ const router = new VueRouter({
       return { x: 0, y: 0 }
     }
   }
+})
+
+router.beforeEach((to, from, next) => {
+  // redirect to login page if not logged in and trying to access a restricted page
+  const publicPages = ['/login', '/register'];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = store.state.authenticated
+
+  console.log("loggedIn")
+  console.log("loggedIn")
+  console.log("loggedIn")
+  console.log("loggedIn")
+  console.log("loggedIn")
+  console.log("loggedIn")
+  console.log(loggedIn)
+  //console.log(router.app.$store.getters('user'))
+
+  if (authRequired && !loggedIn) {
+    return next('/login');
+  }
+
+  next();
 })
 
 export default router

@@ -19,11 +19,11 @@ export default [
       label: 'Rutas',
       icon: 'table'
     },
-    {
-      to: '/horarios',
-      label: 'Horarios',
-      icon: 'book-open-page-variant'
-    },
+    // {
+    //   to: '/horarios',
+    //   label: 'Horarios',
+    //   icon: 'book-open-page-variant'
+    // },
     
     // {
     //   to: '/aportes',

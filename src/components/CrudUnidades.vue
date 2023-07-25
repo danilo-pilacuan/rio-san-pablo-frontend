@@ -2,6 +2,7 @@
   <div id="users" class="home">
     <hero-bar>
       Unidades
+      <b-button slot="right" class="m-2 noPrint" type="is-link" @click="globalPrint">Imprimir</b-button>
       <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button>
     </hero-bar>
     <div class="container ml-1 mr-1" style="max-width: 100%">
@@ -87,7 +88,7 @@
               </b-table-column>
             </template>
 
-          <b-table-column field="actions" label="Acciones" v-slot="props">
+          <b-table-column field="actions" label="Acciones" v-slot="props" cell-class="noPrint" header-class="noPrint">
             <div class="buttons" style="display: flex; flex-wrap: inherit;">
             <b-button
                 rounded
@@ -401,4 +402,11 @@ export default {
 </script>
 
 <style>
+@media print{
+  .noPrint { display: none !important; }
+  .level-right
+  {
+    display: none;
+  }
+}
 </style>

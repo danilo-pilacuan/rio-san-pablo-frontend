@@ -61,11 +61,11 @@ export default {
             //   }
             //   this.$store.dispatch("setAuth", true);
             } else {
-              this.$router.push("/login");
+              //this.$router.push("/login");
             }
           });
       } catch (e) {
-        this.$store.dispatch("setAuth", false);
+        //this.$store.dispatch("setAuth", false);
       }
     },
     

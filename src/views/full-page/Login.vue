@@ -83,39 +83,85 @@
 import { reactive, ref } from '@vue/composition-api'
 import { useRouter } from '@/router'
 import CardComponent from '@/components/CardComponent.vue'
+import User from '../../models/user';
 
 export default {
   name: 'Login',
   components: { CardComponent },
+  computed: {
+    // loggedIn() {
+    //   return this.$store.state.auth.status.loggedIn;
+    // }
+  },
+  created() {
+    if (this.loggedIn) {
+      this.$router.push('/');
+    }
+  },
   data(){
     return {
       isLoading: false,
       inputCorreo: '',
       inputContrasenia: '',
       remember: false,
-      loginHasErrors: false
+      loginHasErrors: false,
+      user:{
+        username:"kenyn.pilaguano@gmail.com",
+        password:"121221",
+        email:"kenyn.pilaguano@gmail.com"
+      }
     }
   },
   methods:{
+    submit2() {
+      console.log("pppppppppppppppppppppppppppppppppppppppppppp")
+      this.loading = true;
+
+        if (this.user.username && this.user.password) {
+          console.log("333333333333333333333333333333333333333333")
+
+          this.$store.dispatch('auth/login', this.user).then(
+            () => {
+              this.$router.push('/');
+            },
+            error => {
+              this.loading = false;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+          );
+        }
+      
+    },
     submit(){
       this.isLoading = true
-      fetch(process.env.VUE_APP_TITLE+"API/usuarios/login", {
+      fetch(process.env.VUE_APP_API+"users/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({
             
             correo: this.inputCorreo,
-            contrasenia: this.inputContrasenia,
+            clave: this.inputContrasenia,
+            nombres: "",
+            apellidos: "",
+            activo: true,
+            tipo: 1,
+
           }),
         })
           .then((response) => response.json())
           .then((data) => {
             console.log(data)
-            var resp = data.resultado;
+            var resp = data.usuario;
             if(resp!=null)
             {
+              this.$store.dispatch("setUser", resp);
+              this.$store.dispatch("setAuth", true);
               this.$router.push('/')
+              
             }
             else
             {
