@@ -94,7 +94,7 @@
                 rounded
                 type="is-link"
                 icon-left="eye"
-                @click="verFicha(props.row)"
+                @click="viewFunction(props.row)"
               >
               </b-button>
 
@@ -172,6 +172,22 @@
               </div>
             </div>
 
+            <div class="columns">
+          <div class="column">
+            <b-field label="Foto Unidad">
+              <b-upload v-model="fotoUnidad" class="file-label" rounded>
+                  <span class="file-cta">
+                      <b-icon class="file-icon" icon="upload"></b-icon>
+                      <span class="file-label">Click to upload</span>
+                  </span>
+                  <span class="file-name" v-if="fotoUnidad">
+                      {{ fotoUnidad.name }}
+                  </span>
+              </b-upload>
+            </b-field>
+          </div>
+        </div>
+
           </section>
           <footer class="modal-card-foot">
             <div class="columns">
@@ -197,6 +213,48 @@
         </div>
       </form>
     </b-modal>
+
+    <b-modal v-model="showUnidad">
+      <div class="modal-card" style="width: auto">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Vista Unidad</p>
+      <button type="button" class="delete" @click="showUnidad=!showUnidad"> </button>
+    </header>
+    <section class="modal-card-body">
+
+      <div class="columns">
+          <div class="column">
+          <b-field label="Foto Unidad">
+            <b-image
+            :src="urlFotoUnidad"
+            
+            ratio="16by9"
+            
+        ></b-image>
+          </b-field>
+        </div>
+      </div>
+
+    
+
+
+      
+      
+      <!-- <br><br>
+      <Pano class="panoContainer" source="http://localhost:3000/images/1689761153134-617068.jpg"></Pano> -->
+    </section>
+    <footer class="modal-card-foot">
+      <div class="columns">
+        
+        <div class="column">
+          <b-button type="is-danger" @click="showUnidad=!showUnidad" label="Cerrar" />
+        </div>
+      </div>
+    </footer>
+      </div>
+
+    </b-modal>
+
   </div>
 </template>
 
@@ -217,6 +275,8 @@ export default {
       inputDescripcion:"",
       inputActivo:true,
       urlFotoUnidad:"",
+      fotoUnidad:null,
+      showUnidad:false,
 
       //info entidad
       nombreEntidad: "Unidad",
@@ -253,9 +313,14 @@ export default {
     this.fetchUnidads();
     
     console.log("ENVENVNENVNVNENVS")
-    console.log(this.titleSAs)
+    
   },
   methods: {
+    viewFunction(unidad) {
+    this.urlFotoUnidad=process.env.VUE_APP_API+unidad.urlFotoUnidad;
+    console.log(unidad)
+    this.showUnidad=true;
+  },
    
     fetchUnidads() {
       try {
@@ -285,77 +350,88 @@ export default {
       this.showModalCreateEdit = true;
       this.isAdd = true;
     },
+    resetForm(){
+      //encerar valores
+      this.inputObservaciones=""
+      this.inputPlaca=""
+      this.inputDescripcion=""
+      this.inputActivo=true
+      this.urlFotoUnidad=""
+      this.fotoUnidad=null
+
+
+      //cerrar modal
+      this.isAdd = false;
+      this.isEdit = false;
+
+      this.showModalCreateEdit = false;
+      this.fetchUnidads();
+    },
     submit() {
-      if (this.isAdd) {
-        fetch(process.env.VUE_APP_API+"Unidads", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            //agregar campos a crear
+      if(this.fotoUnidad==null)
+      {
+        this.$buefy.dialog.alert("Seleccione una imagen");
+      }
+      else
+      {
+        if (this.isAdd) {
 
-            observaciones:this.inputObservaciones,
-            placa:this.inputPlaca,
-            descripcion:this.inputDescripcion,
-            activo:this.inputActivo,
-            urlFotoUnidad:this.urlFotoUnidad
-
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            var resp = data.message;
-            console.log(resp);
-
-            //encerar valores
-            this.inputObservaciones=""
-            this.inputPlaca=""
-            this.inputDescripcion=""
-            this.inputActivo=true
-            this.urlFotoUnidad=""
+let formData = new FormData();
+formData.append( 'placa', this.inputPlaca);
+formData.append( 'descripcion', this.inputDescripcion);
+formData.append( 'observaciones',  this.inputObservaciones);
+formData.append( 'urlFotoUnidad',  "");
+formData.append( 'fotoUnidad',  this.fotoUnidad);
+formData.append( 'activo',  this.inputActivo);
 
 
-            //cerrar modal
-            this.isAdd = false;
-            this.isEdit = false;
+fetch(process.env.VUE_APP_API+"Unidads/uploadimages", {
+  method: "POST",
+  headers: { "Accept": "application/json", },
+  credentials: "include",
+  body: formData
+})
+  .then((response) => response.json())
+  .then((data) => {
+    var resp = data.message;
+    console.log(resp);
 
-            this.showModalCreateEdit = false;
-            this.$buefy.dialog.alert("Unidad agregado correctamente");
+    
+    this.$buefy.dialog.alert("Unidad agregado correctamente");
 
-            this.fetchUnidads();
-          });
-      } else if (this.isEdit) {
-        fetch(
-          process.env.VUE_APP_API+"Unidads",
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
-              //agregar campos editados
-              id:this.idSeleccionado,
-              observaciones:this.inputObservaciones,
-              placa:this.inputPlaca,
-              descripcion:this.inputDescripcion,
-              activo:this.inputActivo,
-              urlFotoUnidad:this.urlFotoUnidad
-            }),
-          }
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            var resp = data.message;
-            //limpiar campos
-            this.inputObservaciones=""
-            this.inputPlaca=""
-            this.inputDescripcion=""
-            this.inputActivo=true
-            //this.fetchUsers();
-            this.showModalCreateEdit = false;
-            this.$buefy.dialog.alert("Unidad editado correctamente");
-            //llamar fetch
-            this.fetchUnidads();
-          });
+    this.resetForm();
+  });
+} else if (this.isEdit) {
+
+let formData = new FormData();
+formData.append( 'id', this.idSeleccionado);
+formData.append( 'placa', this.inputPlaca);
+formData.append( 'descripcion', this.inputDescripcion);
+formData.append( 'observaciones',  this.inputObservaciones);
+formData.append( 'urlFotoUnidad',  "");
+formData.append( 'fotoUnidad',  this.fotoUnidad);
+formData.append( 'activo',  this.inputActivo);
+
+//console.log(formData)
+
+fetch(
+  process.env.VUE_APP_API+"Unidads/withImages",
+  {
+    method: "PUT",
+    headers: { "Accept": "application/json", },
+    credentials: "include",
+    body: formData,
+  }
+)
+  .then((response) => response.json())
+  .then((data) => {
+    var resp = data.message;
+    
+    this.$buefy.dialog.alert("Unidad editado correctamente");
+    //llamar fetch
+    this.resetForm();
+  });
+}
       }
     },
     editFunction(row) {
@@ -366,6 +442,7 @@ export default {
       this.inputDescripcion=row.descripcion
       this.inputActivo=row.activo
       this.idSeleccionado = row.id;
+      this.urlFotoUnidad = row.urlFotoUnidad;
 
       //mostrar modal
       this.showModalCreateEdit = true;
@@ -383,15 +460,7 @@ export default {
         .then((data) => {
           var resp = data.message;
           //limpiar campos form
-          this.selected = null;
-          this.isAdd = false;
-          this.isEdit = false;
-          this.username = "";
-          this.email = "";
-          this.password = "";
-          this.password2 = "";
-
-          this.showModalCreateEdit = false;
+          
           this.$buefy.dialog.alert("Unidad eliminado correctamente");
           //llamar fetch
           this.fetchUnidads();

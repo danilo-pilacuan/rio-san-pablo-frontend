@@ -1,7 +1,7 @@
 <template>
   <div id="users" class="home">
     <hero-bar>
-      Socios
+      Socios y Colaboradores
       <b-button slot="right" class="m-2 noPrint" type="is-link" @click="globalPrint">Imprimir</b-button>
       <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button>
     </hero-bar>
@@ -167,7 +167,11 @@
                   label="Cédula"
                 >
                 
-                  <b-input v-model="inputCedula"></b-input>
+                  <b-input v-model="inputCedula"
+                  validation-message="Solo se permiten números y deben ser 10"
+                  pattern="^[0-9]{10}$"
+                  maxlength="10"
+                  ></b-input>
                 </b-field>
               </div>
             </div>

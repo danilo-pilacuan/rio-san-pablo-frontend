@@ -12,7 +12,6 @@ import store from './store'
 
 /* Vue. Main component */
 import App from './App.vue'
-import VeeValidate from 'vee-validate';
 
 /* Composition API */
 Vue.use(VueCompositionAPI)
@@ -44,9 +43,6 @@ const PrintPlugin = {
   },
 }
 Vue.use(PrintPlugin)
-Vue.use(VeeValidate);
-
-
 
 Vue.use(Buefy)
 

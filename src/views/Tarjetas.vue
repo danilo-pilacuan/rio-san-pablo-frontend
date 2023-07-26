@@ -2,6 +2,7 @@
   <div>
     <SecurityComponent />
     <title-bar :title-stack="titleStack" />
+    <b-button class="ml-5" type="is-link" @click="$router.go(-1)">Volver</b-button>
     <section class="section is-main-section">
       <CrudTarjeta />
     </section>

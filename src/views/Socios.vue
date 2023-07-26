@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-        titleStack : ['Administración','Socios']
+        titleStack : ['Administración','Socios y Colaboradores']
     };
   },
   methods:{

@@ -33,7 +33,7 @@ export default [
     
     {
       to: '/socios',
-      label: 'Socios',
+      label: 'Socios y Colaboradores',
       icon: 'account-circle',
       //updateMark: true
     },

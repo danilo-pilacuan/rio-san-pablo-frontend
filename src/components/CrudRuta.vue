@@ -22,7 +22,9 @@
                                   {{ props.row[column.field][column.subField] }}
                               </div>
                               <div v-else>
-                                  {{ props.row[column.field] }}
+                                {{ column.field=="activa"?(props.row[column.field]==true?"Activa":"Inactiva"):"" }}
+                                {{ column.field!="activa"?props.row[column.field]:"" }}
+                                
                               </div>
                           </template>
                       </b-table-column>
@@ -90,6 +92,8 @@
                                       <option value="false">Inactiva</option>
                                     </b-select>
                                   </b-field>
+                                
+                                
                               </div>
                           </div>
                       </div>
