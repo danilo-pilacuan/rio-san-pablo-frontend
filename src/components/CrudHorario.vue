@@ -58,7 +58,7 @@
                 rounded
                 type="is-link"
                 icon-left="eye"
-                @click="editFunction(props.row)"
+                @click="$router.push('/horarios/' + props.row.id)"
                 :disabled="tipoUsuario==2"
               >
               </b-button>

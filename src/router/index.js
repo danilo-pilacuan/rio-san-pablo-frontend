@@ -158,6 +158,14 @@ const routes = [
     name: 'tarjetas',
     component: () => import('@/views/Tarjetas.vue')
   },
+  {
+    meta: {
+      title: 'Horarios'
+    },
+    path: '/Horarios/:id',
+    name: 'VerHorarios',
+    component: () => import('@/views/ViewCalendario.vue')
+  },
 
   //fin rutas cruds
   {
