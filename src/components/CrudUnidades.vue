@@ -138,7 +138,9 @@
 
             <div class="columns">
               <div class="column">
-                <b-field label="Placa">
+                <b-field label="Placa"
+                :type="{ 'is-danger': !isPlacaValid }"
+                  :message="{ 'Placa no válida, se debe ingresar con el siguiente formato XYZ-### (##)': !isPlacaValid }">
                   <b-input v-model="inputPlaca"></b-input>
                 </b-field>
               </div>
@@ -197,12 +199,14 @@
                   v-if="isAdd"
                   @click="submit"
                   label="Crear"
+                  :disabled="!formValidado"
                 />
                 <b-button
                   type="is-primary"
                   v-else
                   @click="submit"
                   label="Editar"
+                  :disabled="!formValidado"
                 />
               </div>
               <div class="column">
@@ -265,8 +269,21 @@ export default {
     components: {
     HeroBar
   },
+  watch: {
+    inputPlaca: function(newVal) {
+          this.validatePlaca(newVal);
+      },
+  },
+  computed: {
+    formValidado() {
+            return this.isPlacaValid;
+        }
+    },
   data() {
     return {
+      isPlacaValid:false,
+
+
       tipoUsuario:1,
       idSeleccionado:0,
 
@@ -316,6 +333,10 @@ export default {
     
   },
   methods: {
+    validatePlaca(input) {
+        const regex = /^[A-Za-z]{3}-\d{3,4} \(\d{1,3}\)$/;
+        this.isPlacaValid = regex.test(input);
+    },
     viewFunction(unidad) {
     this.urlFotoUnidad=process.env.VUE_APP_API+unidad.urlFotoUnidad;
     console.log(unidad)

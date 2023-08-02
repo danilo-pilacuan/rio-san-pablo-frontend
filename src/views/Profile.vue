@@ -1,6 +1,5 @@
 <template>
   <div v-if="userData">
-    <SecurityComponent />
     <title-bar :title-stack="titleStack" />
     <hero-bar>Perfil</hero-bar>
     <section class="section is-main-section">
@@ -78,7 +77,6 @@ import HeroBar from '@/components/HeroBar.vue'
 
 import Tiles from '@/components/Tiles.vue'
 
-import SecurityComponent from "@/components/SecurityComponent.vue";
 
 export default {
   name: 'Profile',
@@ -87,7 +85,6 @@ export default {
     HeroBar,
     TitleBar,
     CardComponent,
-    SecurityComponent
   },
   data() {
     return {

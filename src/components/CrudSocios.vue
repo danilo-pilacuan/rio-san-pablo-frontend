@@ -165,12 +165,11 @@
               <div class="column">
                 <b-field
                   label="Cédula"
+                  :type="{ 'is-danger': !isCedulaValid }"
+                  :message="{ 'Cédula no válida': !isCedulaValid }"
                 >
                 
                   <b-input v-model="inputCedula"
-                  validation-message="Solo se permiten números y deben ser 10"
-                  pattern="^[0-9]{10}$"
-                  maxlength="10"
                   ></b-input>
                 </b-field>
               </div>
@@ -178,29 +177,38 @@
 
             <div class="columns">
               <div class="column">
-                <b-field label="Nombres">
+                <b-field label="Nombres"
+                :type="{ 'is-danger': !isNombresValid }"
+                  :message="{ 'Nombres no válidos, solo se permiten letras': !isNombresValid }">
                   <b-input v-model="inputNombres"></b-input>
                 </b-field>
               </div>
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Apellidos">
+                <b-field label="Apellidos"
+                :type="{ 'is-danger': !isApellidosValid }"
+                  :message="{ 'Apellidos no válidos, solo se permiten letras': !isApellidosValid }">
                   <b-input v-model="inputApellidos"></b-input>
                 </b-field>
               </div>
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Dirección">
+                <b-field label="Dirección"
+                :type="{ 'is-danger': !isDireccionValid }"
+                  :message="{ 'Formato de dirección no válida': !isDireccionValid }">
                   <b-input v-model="inputDireccion"></b-input>
                 </b-field>
               </div>
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Teléfono">
+                <b-field label="Teléfono"
+                :type="{ 'is-danger': !isTelefonoValid }"
+                :message="{ 'Teléfono no válido': !isTelefonoValid }">
                   <b-input v-model="inputTelefono"></b-input>
+
                 </b-field>
               </div>
             </div>
@@ -241,12 +249,14 @@
                   v-if="isAdd"
                   @click="submit"
                   label="Crear"
+                  :disabled="!formValidado"
                 />
                 <b-button
                   type="is-primary"
                   v-else
                   @click="submit"
                   label="Editar"
+                  :disabled="!formValidado"
                 />
               </div>
               <div class="column">
@@ -267,11 +277,44 @@ export default {
     components: {
     HeroBar
   },
+  watch: {
+    inputTelefono: function(newVal) {
+          this.validateTelefono(newVal);
+      },
+      inputCedula: function(newVal) {
+          this.validateCedula(newVal);
+      },
+      inputNombres: function(newVal) {
+          this.validateNombres(newVal);
+      },
+      inputApellidos: function(newVal) {
+          this.validateApellidos(newVal);
+      },
+      inputDireccion: function(newVal) {
+          this.validateDireccion(newVal);
+      }
+  },
+  computed: {
+    formValidado() {
+            return this.isTelefonoValid &&
+            this.isCedulaValid &&
+            this.isNombresValid &&
+            this.isApellidosValid &&
+            this.isDireccionValid;
+        }
+    },
   data() {
     return {
+      resultado:'',
+      isTelefonoValid: false,
+      isCedulaValid:false,
+      isNombresValid:false,
+      isApellidosValid:false,
+      isDireccionValid:false,
+
       tipoUsuario:1,
       idSeleccionado:0,
-
+      
       inputCedula:"",
       inputNombres:"",
       inputApellidos:"",
@@ -318,7 +361,80 @@ export default {
   
   },
   methods: {
-   
+    validateTelefono(input) {
+            // Define the regular expression for validation (allowing only letters and numbers)
+            const regex = /^[0-9]{10}$/;
+
+            // Perform the validation
+            this.isTelefonoValid = regex.test(input);
+        },
+        validateCedula(input) {
+            // const regex = /^[0-9]+$/;
+            // this.isCedulaValid = regex.test(input);
+            //console.log('validate ced')
+            if (input.length !== 10 || isNaN(input)) {
+                //this.resultado = 'La cédula ingresada no es válida';
+                //console.log('La cédula ingresada no es válida')
+                this.isCedulaValid=false;
+            }
+
+
+            // console.log("cedulaArray")
+            // console.log(cedulaArray)
+            const cedulaArray = input.split('').map(Number);
+            const impares = [];
+            const pares = [];
+
+            for (let i = 0; i < cedulaArray.length-1; i++) {
+                if (i % 2 === 0) {
+                    impares.push(cedulaArray[i] * 2 > 9 ? cedulaArray[i] * 2 - 9 : cedulaArray[i] * 2);
+                } else {
+                    pares.push(cedulaArray[i]);
+                }
+            }
+
+            const sumaImpares = impares.reduce((acc, val) => acc + val, 0);
+            const sumaPares = pares.reduce((acc, val) => acc + val, 0);
+            const sumaTotal = sumaImpares + sumaPares;
+
+            // console.log("sumaImpares")
+            // console.log(sumaImpares)
+            // console.log("sumaPares")
+            // console.log(sumaPares)
+            // console.log("sumaTotal")
+            // console.log(sumaTotal)
+
+            const digitoVerificador = sumaTotal % 10 === 0 ? 0 : 10 - (sumaTotal % 10);
+            // console.log("digitoVerificador")
+            // console.log(digitoVerificador)
+            // console.log("cedulaArray[9]")
+            // console.log(cedulaArray[9])
+
+            if(digitoVerificador===cedulaArray[9])
+            {
+              //console.log("ok")
+              this.isCedulaValid=true;
+              return;
+            }
+            //console.log("false")
+            this.isCedulaValid=false;
+            // // console.log("impares")
+            // // console.log(impares)
+            
+
+        },
+        validateNombres(input) {
+            const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+            this.isNombresValid = regex.test(input);
+        },
+        validateApellidos(input) {
+            const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+            this.isApellidosValid = regex.test(input);
+        },
+        validateDireccion(input) {
+            const regex = /^[0-9a-zA-ZáéíóúÁÉÍÓÚ-\s]+$/;
+            this.isDireccionValid = regex.test(input);
+        },
     fetchSocios() {
       try {
         fetch(this.uri, {

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <SecurityComponent/> -->
     <title-bar :title-stack="titleStack" />
 
     <section class="section is-main-section">
@@ -84,7 +83,6 @@ import CardWidget from '@/components/CardWidget.vue'
 import CardComponent from '@/components/CardComponent.vue'
 import LineChart from '@/components/Charts/LineChart.vue'
 import Notification from '@/components/Notification.vue'
-import SecurityComponent from "@/components/SecurityComponent.vue"
 import ChartCostos from "@/components/ChartCostos.vue"
 
 
@@ -98,7 +96,6 @@ export default {
     HeroBar,
     TitleBar,
     Notification,
-    SecurityComponent,
     LineChart
   },
   data() {

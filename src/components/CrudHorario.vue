@@ -62,14 +62,14 @@
                 :disabled="tipoUsuario==2"
               >
               </b-button>
-              <!-- <b-button
+              <b-button
                 rounded
                 type="is-danger"
                 icon-left="delete"
                 @click="deleteFunction(props.row)"
                 :disabled="tipoUsuario==2"
               >
-              </b-button> -->
+              </b-button>
             </div>
           </b-table-column>
         </b-table>
@@ -183,7 +183,7 @@ export default {
       //columnas tabla Datos
       columns: [
         
-        { field: "id", label: "Id", searchable: true, },
+        // { field: "id", label: "Id", searchable: true, },
         { field: "descripcion", label: "Descripción", searchable: true, },
         { field: "mes", label: "Mes", searchable: true, },
         { field: "anio", label: "Año", searchable: true, },

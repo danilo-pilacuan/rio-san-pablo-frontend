@@ -1,5 +1,5 @@
 <template>
-    <input v-if="rutaCalendarioModel" v-on:blur="handleBlur" v-on:keyup="handleKeyup" type="text" v-model="rutaCalendarioModel.valor" size="3">
+    <input v-if="rutaCalendarioModel" v-on:blur="handleBlur" v-on:keyup="handleKeyup" type="text" v-model="rutaCalendarioModel.valor" size="2">
 </template>
 
 <script>

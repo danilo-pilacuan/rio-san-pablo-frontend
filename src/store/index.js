@@ -110,19 +110,19 @@ const store = new Vuex.Store({
       document.documentElement.classList[!payload ? 'add' : 'remove']('has-aside-left', 'has-navbar-fixed-top')
     },
     fetch ({ commit }, payload) {
-      axios
-        .get(`data-sources/${payload}.json`)
-        .then((r) => {
-          if (r.data && r.data.data) {
-            commit('basic', {
-              key: payload,
-              value: r.data.data
-            })
-          }
-        })
-        .catch(error => {
-          alert(error.message)
-        })
+      // axios
+      //   .get(`data-sources/${payload}.json`)
+      //   .then((r) => {
+      //     if (r.data && r.data.data) {
+      //       commit('basic', {
+      //         key: payload,
+      //         value: r.data.data
+      //       })
+      //     }
+      //   })
+      //   .catch(error => {
+      //     //alert(error.message)
+      //   })
     }
   },
   plugins: [vuexLocal.plugin],

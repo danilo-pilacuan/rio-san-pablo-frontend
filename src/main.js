@@ -9,12 +9,13 @@ import VueCompositionAPI from '@vue/composition-api'
 /* Router & Store */
 import router from './router'
 import store from './store'
-
+import VueExcelXlsx from "vue-excel-xlsx";
 /* Vue. Main component */
 import App from './App.vue'
 
 /* Composition API */
 Vue.use(VueCompositionAPI)
+Vue.use(VueExcelXlsx);
 
 /* Fetch sample data */
 store.dispatch('fetch', 'clients')
