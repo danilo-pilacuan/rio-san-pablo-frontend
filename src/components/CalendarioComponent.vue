@@ -188,13 +188,13 @@
     },
     mounted() {
         console.log("id::::: "+this.$route.params.id)
-        
+        this.fetchHorario();
         this.resetForm();
         
     },
     methods: {
       resetForm(){
-        this.fetchHorario();
+        
         this.fetchRutas();
         this.fetchRutasCalendario();
         this.isAdd=false;
