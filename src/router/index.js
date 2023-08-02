@@ -197,28 +197,28 @@ const router = new VueRouter({
   }
 })
 
-// router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {
   
-//   // redirect to login page if not logged in and trying to access a restricted page
-//   const publicPages = ['/login', '/register'];
-//   const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = store.state.authenticated
+  // redirect to login page if not logged in and trying to access a restricted page
+  const publicPages = ['/login', '/register'];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = store.state.authenticated
 
-//   console.log("loggedIn")
-//   console.log("loggedIn")
-//   console.log("loggedIn")
-//   console.log("loggedIn")
-//   console.log("loggedIn")
-//   console.log("loggedIn")
-//   console.log(loggedIn)
-//   //console.log(router.app.$store.getters('user'))
+  console.log("loggedIn")
+  console.log("loggedIn")
+  console.log("loggedIn")
+  console.log("loggedIn")
+  console.log("loggedIn")
+  console.log("loggedIn")
+  console.log(loggedIn)
+  //console.log(router.app.$store.getters('user'))
 
-//   if (authRequired && !loggedIn) {
-//     return next('/login');
-//   }
+  if (authRequired && !loggedIn) {
+    return next('/login');
+  }
 
-//   next();
-// })
+  next();
+})
 
 export default router
 
