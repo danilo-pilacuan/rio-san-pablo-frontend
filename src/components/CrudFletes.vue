@@ -158,17 +158,17 @@
       },
       inputFechaFin: function(newVal) {
 
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = String(date.getFullYear());
+        const day = String(newVal.getDate()).padStart(2, '0');
+        const month = String(newVal.getMonth() + 1).padStart(2, '0');
+        const year = String(newVal.getFullYear());
 
         this.flete.fechaFin=`${day}-${month}-${year}`;
 
       },
       inputFechaInicio: function(newVal) {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = String(date.getFullYear());
+        const day = String(newVal.getDate()).padStart(2, '0');
+        const month = String(newVal.getMonth() + 1).padStart(2, '0');
+        const year = String(newVal.getFullYear());
 
         this.flete.fechaInicio=`${day}-${month}-${year}`;
       },
