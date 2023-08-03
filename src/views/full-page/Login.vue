@@ -159,6 +159,7 @@ export default {
             if(resp!=null)
             {
               this.$store.dispatch("setUser", resp);
+              this.$store.dispatch("setUserType", resp.tipo);
               this.$store.dispatch("setAuth", true);
               this.$router.push('/')
               

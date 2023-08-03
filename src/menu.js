@@ -12,17 +12,25 @@ export default [
     {
       to: '/reportes',
       label: 'Reportes',
-      icon: 'chart-line'
+      icon: 'chart-line',
     },
     {
       to: '/rutas',
       label: 'Rutas',
-      icon: 'table'
+      icon: 'table',
+      hiddenFor:2
+    },
+    {
+      to: '/fletes',
+      label: 'Fletes',
+      icon: 'truck',
+      
     },
     {
       to: '/horarios',
       label: 'Horarios',
-      icon: 'book-open-page-variant'
+      icon: 'book-open-page-variant',
+      
     },
     
     // {
@@ -35,102 +43,34 @@ export default [
       to: '/socios',
       label: 'Socios y Colaboradores',
       icon: 'account-circle',
+      hiddenFor:2
+      //updateMark: true
+    },
+    {
+      to: '/usuarios',
+      label: 'Usuarios',
+      icon: 'account',
+      hiddenFor:2
       //updateMark: true
     },
     {
        to: '/unidades',
       label: 'Unidades',
-      icon: 'bus'
+      icon: 'bus',
+      
     },
     {
        to: '/inventario',
       label: 'Inventario',
-      icon: 'warehouse'
+      icon: 'warehouse',
+      
     },
     {
       to: '/imprimir',
       label: 'Imprimir',
-      icon: 'printer'
-    },
-    
-    // {
-    //   label: 'Gestión',
-    //   subLabel: 'Submenus Example',
-    //   icon: 'view-list',
-    //   menu: [
-    //     {
-    //       to: '/socios',
-    //       label: 'Socios',
-    //       icon: 'account-circle',
-    //       //updateMark: true
-    //     },
-    //     {
-    //        to: '/unidades',
-    //       label: 'Unidades',
-    //       icon: 'bus'
-    //     },
-    //   ]
-    // }
-    // {
-    //   label: 'reportes',
-    //   subLabel: 'Submenus Example',
-    //   icon: 'view-list',
-    //   menu: [
-    //     {
-    //       to: '/areas',
-    //       label: 'Areas',
-    //       icon: 'plus',
-    //     },
-    //     {
-    //       to: '/categorias',
-    //       label: 'Categorías',
-    //       icon: 'plus',
-    //     },
-    //     {
-    //       to: '/edificios',
-    //       label: 'Edificios',
-    //       icon: 'plus',
-    //     },
-    //     {
-    //       to: '/estadomantenimiento',
-    //       label: 'Estado Mantenimiento',
-    //       icon: 'plus',
-    //     },
-    //     {
-    //       to: '/periodicidades',
-    //       label: 'Periodicidades',
-    //       icon: 'plus',
-    //     },
-    //     {
-    //       to: '/Materiales',
-    //       label: 'Materiales',
-    //       icon: 'plus',
-    //     },
-    //     {
-    //       to: '/prioridades',
-    //       label: 'Prioridades',
-    //       icon: 'plus',
-    //     },
-    //     {
-    //       to: '/tareas',
-    //       label: 'Tareas',
-    //       icon: 'plus',
-    //     },
-    //     {
-    //       to: '/tipomantenimiento',
-    //       label: 'Tipo Mantenimiento',
-    //       icon: 'plus',
-    //     },
-    //     {
-    //       to: '/trabajadores',
-    //       label: 'Trabajadores',
-    //       icon: 'plus',
-    //     }
-    //   ]
-    // }
-
-
-    
+      icon: 'printer',
+      
+    },    
   ],
   
 ]

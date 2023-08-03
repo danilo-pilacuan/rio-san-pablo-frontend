@@ -20,7 +20,7 @@
           :narrowed="false"
           :hoverable="false"
           :loading="false"
-          :focusable="true"
+          :focusable="false"
           :mobile-cards="false"
           :searchable="true"
           :paginated="true"

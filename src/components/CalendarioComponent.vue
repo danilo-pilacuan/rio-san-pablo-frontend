@@ -233,7 +233,7 @@
                 this.diasCalendario.push({valor:i});
             }
 
-            const dateCalendario = new Date(this.objCalendario.anio,this.objCalendario.mes,1);
+            const dateCalendario = new Date(this.objCalendario.anio,this.objCalendario.mes-1,1);
             let diaInicial=dateCalendario.getDay();
             
 

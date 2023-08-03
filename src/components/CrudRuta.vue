@@ -9,7 +9,7 @@
           <div class="block">
 
               <b-table :data="tablaDatos" :bordered="true" :striped="true" :narrowed="false" :hoverable="false"
-                  :loading="false" :focusable="true" :mobile-cards="false" :searchable="true" :paginated="true"
+                  :loading="false" :focusable="false" :mobile-cards="false" :searchable="true" :paginated="true"
                   :per-page="20">
                   <template v-for="column in columns">
                       <b-table-column :key="column.id" v-bind="column">
@@ -22,7 +22,7 @@
                                   {{ props.row[column.field][column.subField] }}
                               </div>
                               <div v-else>
-                                {{ column.field=="activa"?(props.row[column.field]==true?"Activa":"Inactiva"):"" }}
+                                {{ column.field=="activa"?(props.row[column.field]==true?"Si":"No"):"" }}
                                 {{ column.field!="activa"?props.row[column.field]:"" }}
                                 
                               </div>
@@ -87,9 +87,9 @@
                                     </b-select>
                                   </b-field>
                                   <b-field label="Ruta Activa">
-                                    <b-select placeholder="Seleccionar Hora" v-model="ruta.activa">                
-                                      <option value="true">Activa</option>
-                                      <option value="false">Inactiva</option>
+                                    <b-select placeholder="Seleccionar" v-model="ruta.activa">                
+                                      <option value="true">Si</option>
+                                      <option value="false">No</option>
                                     </b-select>
                                   </b-field>
                                 
