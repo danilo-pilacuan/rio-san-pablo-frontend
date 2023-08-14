@@ -2,7 +2,7 @@
   <div>
     
     <title-bar :title-stack="titleStack" />
-    <b-button class="ml-5" type="is-link" @click="$router.go(-1)">Volver</b-button>
+    <b-button class="ml-5 noPrint" type="is-link" @click="$router.go(-1)">Volver</b-button>
     <section class="section is-main-section">
       <CrudAportes />
     </section>
@@ -32,3 +32,12 @@ export default {
   }
 };
 </script>
+<style>
+@media print{
+    .noPrint { display: none !important; }
+    .level-right
+    {
+      display: none;
+    }
+  }
+</style>

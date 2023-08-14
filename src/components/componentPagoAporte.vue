@@ -3,7 +3,7 @@
         <hero-bar>
             Aportes
             <b-button slot="right" class="m-2 noPrint" type="is-link" @click="globalPrint">Imprimir</b-button>
-            <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button>
+            <b-button slot="right" type="is-primary" @click="createAporte">Crear</b-button>
         </hero-bar>
         <div class="container ml-1 mr-1" style="max-width: 100%">
             <div class="block">
@@ -44,14 +44,14 @@
             </div>
         </div>
   
-        <b-modal v-model="showModalCreateEdit">
-            <form @submit.prevent="submit" v-if="aporte">
+        <b-modal v-model="showModalAporte">
+            <form @submitAporte.prevent="submitAporte" v-if="aporte">
                 <!-- <b-checkbox v-model="hasError">Show errors</b-checkbox> -->
                 <div class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">Crear {{ nombreEntidad }}</p>
-                        <!-- <button type="button" class="delete" @click="showModalCreateEdit = false"> </button> -->
-                        <b-button type="is-danger" @click="showModalCreateEdit = false" icon-left="close" rounded />
+                        <!-- <button type="button" class="delete" @click="showModalAporte = false"> </button> -->
+                        <b-button type="is-danger" @click="showModalAporte = false" icon-left="close" rounded />
                     </header>
                     <section class="modal-card-body">
                         <div class="row">
@@ -108,7 +108,7 @@
                                     <div class="columns">
                                         <div class="column is-6">
                                             <b-field label="Total">
-                                              <b-numberinput v-model="aporte.total" step="0.1" min-step="0.01" min="0" disabled/>
+                                              <b-numberinput v-model="aporte.total" step="0.1" min-step="0.01" min="0"/>
                                             </b-field>
                                         </div>
                                         <div class="column is-6">
@@ -148,11 +148,11 @@
                     <footer class="modal-card-foot">
                         <div class="columns">
                             <div class="column">
-                                <b-button type="is-primary" v-if="isAdd" @click="submit" label="Crear" />
-                                <b-button type="is-primary" v-else @click="submit" label="Editar" />
+                                <b-button type="is-primary" v-if="isAddAporte" @click="submitAporte" label="Crear" />
+                                <b-button type="is-primary" v-else @click="submitAporte" label="Editar" />
                             </div>
                             <div class="column">
-                                <b-button type="is-danger" @click="showModalCreateEdit = false" label="Cancelar" />
+                                <b-button type="is-danger" @click="showModalAporte = false" label="Cancelar" />
                             </div>
                         </div>
                     </footer>
@@ -169,42 +169,6 @@
     components: {
         HeroBar
     },
-    watch: {
-        
-        
-        'aporte.tarjetaActual':function(newVal){
-            this.aporte.total=this.totalAporte;
-        },
-        'aporte.adicional':function(newVal){
-            this.aporte.total=this.totalAporte;
-        },
-        'aporte.otros':function(newVal){
-            this.aporte.total=this.totalAporte;
-        },
-        'aporte.mcAct':function(newVal){
-            this.aporte.total=this.totalAporte;
-        },
-        'aporte.mcAnt':function(newVal){
-            this.aporte.total=this.totalAporte;
-        },
-        'aporte.multas':function(newVal){
-            this.aporte.total=this.totalAporte;
-        },
-        'aporte.cantidad':function(newVal){
-            this.aporte.total=this.totalAporte;
-        },
-    },
-    computed: {
-        totalAporte() {
-            return this.aporte.tarjetaActual
-            +this.aporte.adicional
-            +this.aporte.otros
-            +this.aporte.mcAct
-            +this.aporte.mcAnt
-            +this.aporte.multas
-            +this.aporte.cantidad;
-        },
-    },
     data() {
         return {
             tipoUsuario: 1,
@@ -214,7 +178,7 @@
   
             //info entidad
             nombreEntidad: "Aporte",
-            baseUri: process.env.VUE_APP_API + "aportes",
+            
             //tablas Datos
             tablaDatos: [],
             tablaTarjetas: [],
@@ -271,10 +235,10 @@
             //tablas auxiliares
   
             //auxiliares modal
-            isAdd: false,
-            isEdit: false,
+            isAddAporte: false,
+            isEditAporte: false,
   
-            showModalCreateEdit: false,
+            showModalAporte: false,
             showModalDelete: false,
   
             //control errores validacion
@@ -282,17 +246,9 @@
   
         };
     },
-    mounted() {
-        //llamados fetch
-        //this.authLogin();
-        console.log("id::::: "+this.$route.params.id)
-        this.fetchSocios();
-        this.fetchTarjetas();
-        
-        this.resetForm();
-    },
+
     methods: {
-        resetForm() {
+        resetPagoAporte() {
             this.aporte = {
                 id: 0,
                 numDisco:0,
@@ -309,79 +265,21 @@
                 reciboId:0,
                 tarjetaId:0,
             }
-            this.isAdd = false;
-            this.isEdit = false;
-            this.showModalCreateEdit = false;
+            this.isAddAporte = false;
+            this.isEditAporte = false;
+            this.showModalAporte = false;
             this.fetchAportes();
         },
-        fetchAportes() {
-          axios
-        .get(this.baseUri+"/byIdReporte/"+this.$route.params.id)
-        .then(response => (this.tablaDatos = response.data["data"]))
-        .catch(error => console.log(error))
-  
-          //   try {
-          //       fetch(this.baseUri+"/byIdReporte/"+this.$route.params.id, {
-          //           method: "GET",
-          //           headers: { "Content-Type": "application/json" },
-          //           credentials: "include",
-          //       })
-          //           .then((response) => response.json())
-          //           .then((data) => {
-          //               if (data) {
-          //                   this.tablaDatos = data["data"];
-          //               } else {
-          //                   //this.$router.push("/login")
-          //                   this.tablaDatos = [];
-          //               }
-          //           });
-          //   } catch (e) {
-          //       //this.$store.dispatch("setAuth", false);
-          //   }
+
+       
+   
+        createAporte() {
+            this.showModalAporte = true;
+            this.isAddAporte = true;
         },
-        fetchTarjetas() {
-  
-          axios
-        .get(process.env.VUE_APP_API+"tarjetas")
-        .then(response => (this.tablaTarjetas = response.data["data"]))
-        .catch(error => console.log(error))
-  
-      //   try {
-      //     fetch(process.env.VUE_APP_API+"tarjetas", {
-      //       method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include",
-      //     })
-      //       .then((response) => response.json()) .then((data) => {
-      //         if (data) {
-      //           this.tablaTarjetas = data["data"];
-      //         } else {
-      //           this.tablaTarjetas = [];
-      //         }
-      //       });
-      //   } catch (e) {
-          
-      //   }
-      },
-  
-      fetchSocios() {
-  
-          axios
-        .get(process.env.VUE_APP_API+"socios")
-        .then(response => (this.tablaSocios  = response.data["data"]))
-        .catch(error => console.log(error))
-  
-      //   try {
-      //     fetch(process.env.VUE_APP_API+"socios", { method: "GET", headers: { "Content-Type": "application/json"}, credentials: "include", })
-      //       .then((response) => response.json()) .then((data) => { if (data) { this.tablaSocios = data["data"]; } else { this.tablaSocios = []; } });
-      //   } catch (e) { }
-      },
-  
-        createFunction() {
-            this.showModalCreateEdit = true;
-            this.isAdd = true;
-        },
-        submit() {
-            if (this.isAdd) {
-                fetch(this.baseUri, {
+        submitAporte() {
+            if (this.isAddAporte) {
+                fetch(process.env.VUE_APP_API + "aportes", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",
@@ -396,12 +294,12 @@
   
                         this.$buefy.dialog.alert("Aporte agregado correctamente");
   
-                        this.resetForm();
+                        this.resetPagoAporte();
   
                     });
-            } else if (this.isEdit) {
+            } else if (this.isEditAporte) {
                 fetch(
-                    this.baseUri + "/" + this.aporte.id,
+                    process.env.VUE_APP_API + "aportes" + "/" + this.aporte.id,
                     {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
@@ -419,7 +317,7 @@
   
                         this.$buefy.dialog.alert("Aporte editado correctamente");
                         //llamar fetch
-                        this.showModalCreateEdit = false;
+                        this.showModalAporte = false;
   
                     });
             }
@@ -428,9 +326,9 @@
             //obtener valores para editar en form
   
             //mostrar modal
-            this.showModalCreateEdit = true;
-            this.isAdd = false;
-            this.isEdit = true;
+            this.showModalAporte = true;
+            this.isAddAporte = false;
+            this.isEditAporte = true;
         },
         deleteFunction(row) {
             const idDel = row.id;
@@ -446,7 +344,7 @@
   
                     this.$buefy.dialog.alert("Aporte eliminado correctamente");
                     //llamar fetch
-                    this.resetForm();
+                    this.resetPagoAporte();
                 });
         },
     },
