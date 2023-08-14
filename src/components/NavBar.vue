@@ -82,15 +82,15 @@
         </nav-bar-menu> -->
         <nav-bar-menu class="has-divider has-user-avatar">
           <!-- <user-avatar /> -->
-          <div class="is-user-name">
-            <span>Administrador</span>
+          <div class="is-user-name" v-if="user">
+            <span>{{ user.nombres }} {{ user.apellidos }} ({{ user.tipo==1?"Administrador":"Secretaria" }})</span>
           </div>
 
           <div
             slot="dropdown"
             class="navbar-dropdown"
           >
-            <router-link
+            <!-- <router-link
               to="/profile"
               class="navbar-item"
               exact-active-class="is-active"
@@ -100,7 +100,7 @@
                 custom-size="default"
               />
               <span>Mi perfil</span>
-            </router-link>
+            </router-link> -->
             <!-- <a class="navbar-item">
               <b-icon
                 icon="settings"
@@ -108,7 +108,7 @@
               />
               <span>Configuración</span>
             </a> -->
-            <hr class="navbar-divider">
+            <!-- <hr class="navbar-divider"> -->
             <a class="navbar-item" @click="logout">
               <b-icon
                 icon="logout"
@@ -138,7 +138,6 @@
 <script>
 import { useStore } from '@/store'
 import { useRouter } from '@/router'
-import { computed, ref, onMounted } from '@vue/composition-api'
 import NavBarMenu from '@/components/NavBarMenu.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
 
@@ -148,92 +147,59 @@ export default {
     UserAvatar,
     NavBarMenu
   },
-  setup (props, { root: { $buefy } }) {
-    const store = useStore()
-
-    const asideToggleMobile = () => {
-      store.commit('asideMobileStateToggle')
-    }
-
-    const asideDesktopOnlyToggle = () => {
-      store.dispatch('asideDesktopOnlyToggle')
-    }
-
-    const isAsideMobileExpanded = computed(() => store.state.isAsideMobileExpanded)
-
-    const asideMobileIcon = computed(
-      () => isAsideMobileExpanded.value ? 'backburger' : 'forwardburger'
-    )
-
-    const isNavBarVisible = computed(() => store.state.isNavBarVisible)
-
-    const userName = computed(() => store.state.userName)
-
-    const isMenuActive = ref(false)
-
-    const menuToggle = () => {
-      isMenuActive.value = !isMenuActive.value
-    }
-
-    const menuToggleIcon = computed(
-      () => isMenuActive.value ? 'close' : 'dots-vertical'
-    )
-
-    const router = useRouter()
-
-    onMounted(() => {
-      router.afterEach(() => {
-        isMenuActive.value = false
-      })
-    })
-
-    const logout = () => {
-      // $buefy.snackbar.open({
-      //   message: 'Log out clicked',
-      //   queue: false
-      // })
-
-      // try {
-      //   fetch(process.env.VUE_APP_TITLE+"API/usuarios/logout", {
-      //     method: "GET",
-      //     headers: { "Content-Type": "application/json" },
-      //     credentials: "include",
-      //   })
-      //     .then((response) => response.json())
-      //     .then((data) => {
-      //       router.push('/login')
-      //     });
-      // } catch (e) {
-      //   //this.$store.dispatch("setAuth", false);
-      // }
-        
-      store.dispatch("setUser", null);
-      store.dispatch("setAuth", false);
-      router.push('/login')
-    }
-
+  data() {
     return {
-      asideToggleMobile,
-      asideDesktopOnlyToggle,
-      isAsideMobileExpanded,
-      asideMobileIcon,
-      isNavBarVisible,
-      userName,
-      isMenuActive,
-      menuToggle,
-      menuToggleIcon,
-      logout
+      isMenuActive: false
     }
+  },
+  computed: {
+    isAsideMobileExpanded() {
+      return this.$store.state.isAsideMobileExpanded
+    },
+    asideMobileIcon() {
+      return this.isAsideMobileExpanded ? 'backburger' : 'forwardburger'
+    },
+    isNavBarVisible() {
+      return this.$store.state.isNavBarVisible
+    },
+    userName() {
+      return this.$store.state.userName
+    },
+    menuToggleIcon() {
+      return this.isMenuActive ? 'close' : 'dots-vertical'
+    },
+    user() {
+            return this.$store.state.user;
+        },
+  },
+  methods: {
+    asideToggleMobile() {
+      this.$store.commit('asideMobileStateToggle')
+    },
+    asideDesktopOnlyToggle() {
+      this.$store.dispatch('asideDesktopOnlyToggle')
+    },
+    menuToggle() {
+      this.isMenuActive = !this.isMenuActive
+    },
+    logout() {
+      this.$store.dispatch("setUser", null);
+      this.$store.dispatch("setAuth", false);
+      this.$router.push('/login')
+    }
+  },
+  mounted() {
+    this.$router.afterEach(() => {
+      this.isMenuActive = false
+    })
   }
 }
 </script>
 
 <style>
-@media print
-{    
-    .no-print, .no-print *
-    {
-        display: none !important;
-    }
+@media print {
+  .no-print, .no-print * {
+    display: none !important;
+  }
 }
 </style>

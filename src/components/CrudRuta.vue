@@ -1,340 +1,385 @@
 <template>
-  <div id="users" class="home">
-      <hero-bar>
-          Rutas
-          <b-button slot="right" class="m-2 noPrint" type="is-link" @click="globalPrint">Imprimir</b-button>
-          <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button>
-      </hero-bar>
-      <div class="container ml-1 mr-1" style="max-width: 100%">
-          <div class="block">
+    <div id="users" class="home">
+        <hero-bar>
+            Rutas
+            <b-button slot="right" class="m-2 noPrint" type="is-link" @click="globalPrint">Imprimir</b-button>
+            <b-button slot="right" type="is-primary" @click="createFunction"
+                :disabled="user && user.tipo != 1">Crear</b-button>
+        </hero-bar>
+        <div class="container ml-1 mr-1" style="max-width: 100%">
+            <div class="block">
 
-              <b-table :data="tablaDatos" :bordered="true" :striped="true" :narrowed="false" :hoverable="false"
-                  :loading="false" :focusable="false" :mobile-cards="false" :searchable="true" :paginated="true"
-                  :per-page="20">
-                  <template v-for="column in columns">
-                      <b-table-column :key="column.id" v-bind="column">
-                          <template v-if="column.searchable && !column.numeric" #searchable="props">
-                              <b-input v-model="props.filters[props.column.field]" placeholder="Buscar..." icon="magnify"
-                                  size="is-small" />
-                          </template>
-                          <template v-slot="props">
-                              <div v-if="typeof props.row[column.field] === 'object'">
-                                  {{ props.row[column.field][column.subField] }}
-                              </div>
-                              <div v-else>
-                                {{ column.field=="activa"?(props.row[column.field]==true?"Si":"No"):"" }}
-                                {{ column.field!="activa"?props.row[column.field]:"" }}
-                                
-                              </div>
-                          </template>
-                      </b-table-column>
-                  </template>
-                  <b-table-column field="actions" label="Acciones" v-slot="props" cell-class="noPrint" header-class="noPrint">
-                      <div class="buttons">
-                          <slot name="addButtons"></slot>
-                          <b-button rounded type="is-warning" icon-left="pencil" @click="editFunction(props.row)"
-                              :disabled="tipoUsuario == 2">
-                          </b-button>
-                          <b-button rounded type="is-danger" icon-left="delete" @click="deleteFunction(props.row)"
-                              :disabled="tipoUsuario == 2">
-                          </b-button>
-                      </div>
-                  </b-table-column>
-              </b-table>
-          </div>
-      </div>
+                <b-table :data="tablaDatos" :bordered="true" :striped="true" :narrowed="false" :hoverable="false"
+                    :loading="false" :focusable="false" :mobile-cards="false" :searchable="true" :paginated="true"
+                    :per-page="20">
+                    <template v-for="column in columns">
+                        <b-table-column :key="column.id" v-bind="column">
+                            <template v-if="column.searchable && !column.numeric" #searchable="props">
+                                <b-input v-model="props.filters[props.column.field]" placeholder="Buscar..." icon="magnify"
+                                    size="is-small" />
+                            </template>
+                            <template v-slot="props">
+                                <div v-if="typeof props.row[column.field] === 'object'">
+                                    {{ props.row[column.field][column.subField] }}
+                                </div>
+                                <div v-else>
+                                    {{ column.field == "activa" ? (props.row[column.field] == true ? "Si" : "No") : "" }}
+                                    {{ column.field != "activa" ? props.row[column.field] : "" }}
 
-      <b-modal v-model="showModalCreateEdit">
-          <form @submit.prevent="submit" v-if="ruta">
-              <!-- <b-checkbox v-model="hasError">Show errors</b-checkbox> -->
-              <div class="modal-card" style="width: auto">
-                  <header class="modal-card-head">
-                      <p class="modal-card-title">Crear {{ nombreEntidad }}</p>
-                      <!-- <button type="button" class="delete" @click="showModalCreateEdit = false"> </button> -->
-                      <b-button type="is-danger" @click="showModalCreateEdit = false" icon-left="close" rounded />
-                  </header>
-                  <section class="modal-card-body">
-                      <div class="row">
-                          <div class="columns">
-                              <div class="column">
-                                  <b-field label="Nombre">
-                                      <b-input v-model="ruta.nombre"></b-input>
-                                  </b-field>
-                                  <b-field label="Lugar Inicio">
-                                      <b-input v-model="ruta.lugarInicio"></b-input>
-                                  </b-field>
-                                  <b-field label="Lugar Fin">
-                                      <b-input v-model="ruta.lugarFin"></b-input>
-                                  </b-field>
-                                  <b-field label="Hora Inicio">
-                                    <b-select placeholder="Seleccionar Hora" v-model="ruta.horaInicio">
-                                      <option
-                                          v-for="option in dataHoras"
-                                          :value="option.hora"
-                                          :key="option.id">
-                                          {{ option.hora }}
-                                      </option>
-                                    </b-select>
-                                  </b-field>
-                                  <b-field label="Hora Fin">
-                                    <b-select placeholder="Seleccionar Hora" v-model="ruta.horaFin">
-                                      <option
-                                          v-for="option in dataHoras"
-                                          :value="option.hora"
-                                          :key="option.id">
-                                          {{ option.hora }}
-                                      </option>
-                                    </b-select>
-                                  </b-field>
-                                  <b-field label="Ruta Activa">
-                                    <b-select placeholder="Seleccionar" v-model="ruta.activa">                
-                                      <option value="true">Si</option>
-                                      <option value="false">No</option>
-                                    </b-select>
-                                  </b-field>
-                                
-                                
-                              </div>
-                          </div>
-                      </div>
-                  </section>
-                  <footer class="modal-card-foot">
-                      <div class="columns">
-                          <div class="column">
-                              <b-button type="is-primary" v-if="isAdd" @click="submit" label="Crear" />
-                              <b-button type="is-primary" v-else @click="submit" label="Editar" />
-                          </div>
-                          <div class="column">
-                              <b-button type="is-danger" @click="showModalCreateEdit = false" label="Cancelar" />
-                          </div>
-                      </div>
-                  </footer>
-              </div>
-          </form>
-      </b-modal>
-  </div>
+                                </div>
+                            </template>
+                        </b-table-column>
+                    </template>
+                    <b-table-column field="actions" label="Acciones" v-slot="props" cell-class="noPrint"
+                        header-class="noPrint">
+                        <div class="buttons">
+                            <slot name="addButtons"></slot>
+                            <b-button rounded type="is-warning" icon-left="pencil" @click="editFunction(props.row)"
+                                :disabled="tipoUsuario == 2">
+                            </b-button>
+                            <b-button rounded type="is-danger" icon-left="delete" @click="deleteFunction(props.row)"
+                                :disabled="tipoUsuario == 2">
+                            </b-button>
+                        </div>
+                    </b-table-column>
+                </b-table>
+            </div>
+        </div>
+
+        <b-modal v-model="showModalCreateEdit">
+            <form @submit.prevent="submit" v-if="ruta">
+                <!-- <b-checkbox v-model="hasError">Show errors</b-checkbox> -->
+                <div class="modal-card" style="width: auto">
+                    <header class="modal-card-head">
+                        <p class="modal-card-title">{{ isEdit?"Editar":"Crear" }} {{ nombreEntidad }}</p>
+                        <!-- <button type="button" class="delete" @click="showModalCreateEdit = false"> </button> -->
+                        <b-button type="is-danger" @click="showModalCreateEdit = false" icon-left="close" rounded />
+                    </header>
+                    <section class="modal-card-body">
+                        <div class="row">
+                            <div class="columns">
+                                <div class="column">
+                                    <b-field label="Nombre"
+                                        :type="{ 'is-danger': !isNombreValid }"
+                                        :message="{ 'Nombre no válido, solo se permiten letras, números y espacios': !isNombreValid }">
+                                        <b-input v-model="ruta.nombre" :disabled="user && user.tipo != 1"></b-input>
+                                    </b-field>
+                                    <b-field label="Lugar Inicio"
+                                    :type="{ 'is-danger': !isLugarInicioValid }"
+                                        :message="{ 'Lugar Inicio no válido, solo se permiten letras, números y espacios': !isLugarInicioValid }">
+                                        <b-input v-model="ruta.lugarInicio"
+                                        :disabled="user && user.tipo != 1"></b-input>
+                                    </b-field>
+                                    <b-field label="Lugar Fin"
+                                    :type="{ 'is-danger': !isLugarFinValid }"
+                                        :message="{ 'Lugar Fin no válido, solo se permiten letras, números y espacios': !isLugarFinValid }">
+                                        <b-input v-model="ruta.lugarFin"
+                                        :disabled="user && user.tipo != 1"></b-input>
+                                    </b-field>
+                                    <b-field label="Hora Inicio">
+                                        <b-select placeholder="Seleccionar Hora" v-model="ruta.horaInicio" :disabled="user && user.tipo != 1">
+                                            <option v-for="option in dataHoras" :value="option.hora" :key="option.id">
+                                                {{ option.hora }}
+                                            </option>
+                                        </b-select>
+                                    </b-field>
+                                    <b-field label="Hora Fin">
+                                        <b-select placeholder="Seleccionar Hora" v-model="ruta.horaFin" :disabled="user && user.tipo != 1">
+                                            <option v-for="option in dataHoras" :value="option.hora" :key="option.id">
+                                                {{ option.hora }}
+                                            </option>
+                                        </b-select>
+                                    </b-field>
+                                    <b-field label="Ruta Activa">
+                                        <b-select placeholder="Seleccionar" v-model="ruta.activa">
+                                            <option :value="true">Si</option>
+                                            <option :value="false">No</option>
+                                        </b-select>
+                                    </b-field>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <footer class="modal-card-foot">
+                        <div class="columns">
+                            <div class="column">
+                                <b-button type="is-primary" v-if="isAdd" @click="submit" label="Crear"
+                                    :disabled="!formValidado" />
+                                <b-button type="is-primary" v-else @click="submit" label="Editar"
+                                    :disabled="!formValidado" />
+                            </div>
+                            <div class="column">
+                                <b-button type="is-danger" @click="showModalCreateEdit = false" label="Cancelar" />
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </form>
+        </b-modal>
+    </div>
 </template>
 
 <script>
 import HeroBar from '@/components/HeroBar.vue'
 
 export default {
-  components: {
-      HeroBar
-  },
-  data() {
-      return {
-          tipoUsuario: 1,
-          idSeleccionado: 0,
+    components: {
+        HeroBar
+    },
+    watch: {
+        'ruta.nombre': function (newVal) {
+            this.validateNombre(newVal);
+        },
+        'ruta.lugarInicio': function (newVal) {
+            this.validateLugarInicio(newVal);
+        },
+        'ruta.lugarFin': function (newVal) {
+            this.validateLugarFin(newVal);
+        },
+    },
+    computed: {
+        user() {
+            return this.$store.state.user;
+        },
+        formValidado() {
+            return this.isNombreValid &&
+                this.isLugarInicioValid &&
+                this.isLugarFinValid;
+        }
+    },
+    data() {
+        return {
+            isNombreValid: false,
+            isLugarInicioValid: false,
+            isLugarFinValid: false,
+            tipoUsuario: 1,
+            idSeleccionado: 0,
 
-          ruta: null,
+            ruta: null,
 
-          dataHoras:[
-            {id:1,hora:"05:00"},
-            {id:2,hora:"05:30"},
-            {id:3,hora:"06:00"},
-            {id:4,hora:"06:30"},
-            {id:5,hora:"07:00"},
-            {id:6,hora:"07:30"},
-            {id:7,hora:"08:00"},
-            {id:8,hora:"08:30"},
-            {id:9,hora:"09:00"},
-            {id:10,hora:"09:30"},
-            {id:11,hora:"10:00"},
-            {id:12,hora:"10:30"},
-            {id:13,hora:"11:00"},
-            {id:14,hora:"11:30"},
-            {id:15,hora:"12:00"},
-            {id:16,hora:"12:30"},
-            {id:17,hora:"13:00"},
-            {id:18,hora:"13:30"},
-            {id:19,hora:"14:00"},
-            {id:20,hora:"14:30"},
-            {id:21,hora:"15:00"},
-            {id:22,hora:"15:30"},
-            {id:23,hora:"16:00"},
-            {id:24,hora:"16:30"},
-            {id:25,hora:"17:00"},
-            {id:26,hora:"17:30"},
-            {id:27,hora:"18:00"},
-            {id:28,hora:"18:30"},
-            {id:29,hora:"19:00"},
-            {id:30,hora:"19:30"},
-          ],
+            dataHoras: [
+                { id: 1, hora: "05:00" },
+                { id: 2, hora: "05:30" },
+                { id: 3, hora: "06:00" },
+                { id: 4, hora: "06:30" },
+                { id: 5, hora: "07:00" },
+                { id: 6, hora: "07:30" },
+                { id: 7, hora: "08:00" },
+                { id: 8, hora: "08:30" },
+                { id: 9, hora: "09:00" },
+                { id: 10, hora: "09:30" },
+                { id: 11, hora: "10:00" },
+                { id: 12, hora: "10:30" },
+                { id: 13, hora: "11:00" },
+                { id: 14, hora: "11:30" },
+                { id: 15, hora: "12:00" },
+                { id: 16, hora: "12:30" },
+                { id: 17, hora: "13:00" },
+                { id: 18, hora: "13:30" },
+                { id: 19, hora: "14:00" },
+                { id: 20, hora: "14:30" },
+                { id: 21, hora: "15:00" },
+                { id: 22, hora: "15:30" },
+                { id: 23, hora: "16:00" },
+                { id: 24, hora: "16:30" },
+                { id: 25, hora: "17:00" },
+                { id: 26, hora: "17:30" },
+                { id: 27, hora: "18:00" },
+                { id: 28, hora: "18:30" },
+                { id: 29, hora: "19:00" },
+                { id: 30, hora: "19:30" },
+            ],
 
-          //info entidad
-          nombreEntidad: "Ruta",
-          baseUri: process.env.VUE_APP_API + "rutas",
-          //tablas Datos
-          tablaDatos: [],
-          //columnas tabla Datos
-          columns: [
-              {
-                  field: "nombre",
-                  label: "Nombre",
-              },
-              {
-                  field: "lugarInicio",
-                  label: "Lugar Inicio",
-              },
-              {
-                  field: "lugarFin",
-                  label: "Lugar Fin",
-              },
-              {
-                  field: "horaInicio",
-                  label: "Hora Inicio",
-              },
-              {
-                  field: "horaFin",
-                  label: "Hora Fin",
-              },
-              {
-                  field: "activa",
-                  label: "Activa",
-              }
-          ],
-          //tablas auxiliares
+            //info entidad
+            nombreEntidad: "Ruta",
+            baseUri: process.env.VUE_APP_API + "rutas",
+            //tablas Datos
+            tablaDatos: [],
+            //columnas tabla Datos
+            columns: [
+                {
+                    field: "nombre",
+                    label: "Nombre",
+                },
+                {
+                    field: "lugarInicio",
+                    label: "Lugar Inicio",
+                },
+                {
+                    field: "lugarFin",
+                    label: "Lugar Fin",
+                },
+                {
+                    field: "horaInicio",
+                    label: "Hora Inicio",
+                },
+                {
+                    field: "horaFin",
+                    label: "Hora Fin",
+                },
+                {
+                    field: "activa",
+                    label: "Activa",
+                }
+            ],
+            //tablas auxiliares
 
-          //auxiliares modal
-          isAdd: false,
-          isEdit: false,
+            //auxiliares modal
+            isAdd: false,
+            isEdit: false,
 
-          showModalCreateEdit: false,
-          showModalDelete: false,
+            showModalCreateEdit: false,
+            showModalDelete: false,
 
-          //control errores validacion
-
-
-      };
-  },
-  mounted() {
-      //llamados fetch
-      //this.authLogin();
-      this.resetForm();
-  },
-  methods: {
-      resetForm() {
-          this.ruta = {
-              id: 0,
-              nombre:"",
-              lugarInicio:"",
-              lugarFin:"",
-              horaInicio:"05:30",
-              horaFin:"18:00",
-              activa:true
-          }
-          this.isAdd = false;
-          this.isEdit = false;
-          this.showModalCreateEdit = false;
-          this.fetchRutas();
-      },
-      fetchRutas() {
-          try {
-              fetch(this.baseUri, {
-                  method: "GET",
-                  headers: { "Content-Type": "application/json" },
-                  credentials: "include",
-              })
-                  .then((response) => response.json())
-                  .then((data) => {
-                      if (data) {
-                          this.tablaDatos = data["data"];
-                      } else {
-                          //this.$router.push("/login")
-                          this.tablaDatos = [];
-                      }
-                  });
-          } catch (e) {
-              //this.$store.dispatch("setAuth", false);
-          }
-      },
+            //control errores validacion
 
 
-      createFunction() {
-          this.showModalCreateEdit = true;
-          this.isAdd = true;
-      },
-      submit() {
-          if (this.isAdd) {
-              fetch(this.baseUri, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  credentials: "include",
-                  body: JSON.stringify(this.ruta),
-              })
-                  .then((response) => response.json())
-                  .then((data) => {
-                      var resp = data.message;
-                      console.log(resp);
+        };
+    },
+    mounted() {
+        //llamados fetch
+        //this.authLogin();
+        this.resetForm();
 
-                      //cerrar modal
+    },
+    methods: {
+        resetForm() {
+            this.ruta = {
+                id: 0,
+                nombre: "",
+                lugarInicio: "",
+                lugarFin: "",
+                horaInicio: "05:30",
+                horaFin: "18:00",
+                activa: true
+            }
+            this.isAdd = false;
+            this.isEdit = false;
+            this.showModalCreateEdit = false;
+            this.fetchRutas();
+        },
+        validateNombre(input) {
+            const regex =  /^(?!.*\s{3,})[0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-][0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-\s]*$/;
+            this.isNombreValid = regex.test(input);
+        },
+        validateLugarInicio(input) {
+            const regex =  /^(?!.*\s{3,})[0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-][0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-\s]*$/;
+            this.isLugarInicioValid = regex.test(input);
+        },
+        validateLugarFin(input) { 
+            const regex =  /^(?!.*\s{3,})[0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-][0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-\s]*$/;
+            this.isLugarFinValid = regex.test(input);
+        },
+        fetchRutas() {
+            try {
+                fetch(this.baseUri, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data) {
+                            this.tablaDatos = data["data"];
+                        } else {
+                            //this.$router.push("/login")
+                            this.tablaDatos = [];
+                        }
+                    });
+            } catch (e) {
+                //this.$store.dispatch("setAuth", false);
+            }
+        },
 
-                      this.$buefy.dialog.alert("Ruta agregado correctamente");
 
-                      this.resetForm();
+        createFunction() {
+            this.showModalCreateEdit = true;
+            this.isAdd = true;
+        },
+        submit() {
+            if (this.isAdd) {
+                fetch(this.baseUri, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(this.ruta),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        var resp = data.message;
+                        console.log(resp);
 
-                  });
-          } else if (this.isEdit) {
-              fetch(
-                  this.baseUri + "/" + this.ruta.id,
-                  {
-                      method: "PUT",
-                      headers: { "Content-Type": "application/json" },
-                      credentials: "include",
-                      body: JSON.stringify(this.ruta),
-                  }
-              )
-                  .then((response) => response.json())
-                  .then((data) => {
-                      var resp = data.message;
-                      console.log(resp)
-                      //limpiar campos
+                        //cerrar modal
 
-                      //this.fetchUsers();
+                        this.$buefy.dialog.alert("Ruta agregado correctamente");
 
-                      this.$buefy.dialog.alert("Ruta editado correctamente");
-                      //llamar fetch
-                      this.showModalCreateEdit = false;
+                        this.resetForm();
 
-                  });
-          }
-      },
-      editFunction(row) {
-          //obtener valores para editar en form
-          this.ruta=row;
-          //mostrar modal
-          this.showModalCreateEdit = true;
-          this.isAdd = false;
-          this.isEdit = true;
-      },
-      deleteFunction(row) {
-          const idDel = row.id;
-          fetch(process.env.VUE_APP_API + "Rutas/" + idDel.toString(), {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-          })
-              .then((response) => response.json())
-              .then((data) => {
-                  var resp = data.message;
-                  //limpiar campos form
+                    });
+            } else if (this.isEdit) {
+                fetch(
+                    this.baseUri + "/" + this.ruta.id,
+                    {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify(this.ruta),
+                    }
+                )
+                    .then((response) => response.json())
+                    .then((data) => {
+                        var resp = data.message;
+                        console.log(resp)
+                        //limpiar campos
 
-                  this.$buefy.dialog.alert("Ruta eliminado correctamente");
-                  //llamar fetch
-                  this.resetForm();
-              });
-      },
-  },
+                        //this.fetchUsers();
+
+                        this.$buefy.dialog.alert("Ruta editado correctamente");
+                        //llamar fetch
+                        this.showModalCreateEdit = false;
+
+                    });
+            }
+        },
+        editFunction(row) {
+            //obtener valores para editar en form
+            this.ruta = row;
+            //mostrar modal
+            this.showModalCreateEdit = true;
+            this.isAdd = false;
+            this.isEdit = true;
+        },
+        deleteFunction(row) {
+            const idDel = row.id;
+            fetch(process.env.VUE_APP_API + "Rutas/" + idDel.toString(), {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    var resp = data.message;
+                    //limpiar campos form
+
+                    this.$buefy.dialog.alert("Ruta eliminado correctamente");
+                    //llamar fetch
+                    this.resetForm();
+                });
+        },
+    },
 };
 </script>
 
 <style>
-@media print{
-  .noPrint { display: none !important; }
-  .level-right
-  {
-    display: none;
-  }
+@media print {
+    .noPrint {
+        display: none !important;
+    }
+
+    .level-right {
+        display: none;
+    }
 }
 </style>

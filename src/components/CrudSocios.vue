@@ -3,7 +3,7 @@
     <hero-bar>
       Socios y Colaboradores
       <b-button slot="right" class="m-2 noPrint" type="is-link" @click="globalPrint">Imprimir</b-button>
-      <b-button slot="right" type="is-primary" @click="createFunction">Crear</b-button>
+      <b-button slot="right" type="is-primary" @click="createFunction" :disabled="user && user.tipo != 1">Crear</b-button>
     </hero-bar>
     <div class="container ml-1 mr-1" style="max-width: 100%">
         
@@ -117,13 +117,13 @@
 
           <b-table-column field="actions" label="Acciones" v-slot="props" cell-class="noPrint" header-class="noPrint">
             <div class="buttons" style="display: flex; flex-wrap: inherit;">
-            <b-button
+            <!-- <b-button
                 rounded
                 type="is-link"
                 icon-left="eye"
                 @click="verFicha(props.row)"
               >
-              </b-button>
+              </b-button> -->
 
 
               <b-button
@@ -169,7 +169,7 @@
                   :message="{ 'Cédula no válida': !isCedulaValid }"
                 >
                 
-                  <b-input v-model="inputCedula"
+                  <b-input v-model="inputCedula" :disabled="user && user.tipo != 1"
                   ></b-input>
                 </b-field>
               </div>
@@ -180,7 +180,7 @@
                 <b-field label="Nombres"
                 :type="{ 'is-danger': !isNombresValid }"
                   :message="{ 'Nombres no válidos, solo se permiten letras': !isNombresValid }">
-                  <b-input v-model="inputNombres"></b-input>
+                  <b-input v-model="inputNombres" :disabled="user && user.tipo != 1"></b-input>
                 </b-field>
               </div>
             </div>
@@ -189,7 +189,7 @@
                 <b-field label="Apellidos"
                 :type="{ 'is-danger': !isApellidosValid }"
                   :message="{ 'Apellidos no válidos, solo se permiten letras': !isApellidosValid }">
-                  <b-input v-model="inputApellidos"></b-input>
+                  <b-input v-model="inputApellidos" :disabled="user && user.tipo != 1"></b-input>
                 </b-field>
               </div>
             </div>
@@ -198,16 +198,16 @@
                 <b-field label="Dirección"
                 :type="{ 'is-danger': !isDireccionValid }"
                   :message="{ 'Formato de dirección no válida': !isDireccionValid }">
-                  <b-input v-model="inputDireccion"></b-input>
+                  <b-input v-model="inputDireccion" :disabled="user && user.tipo != 1"></b-input>
                 </b-field>
               </div>
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Teléfono"
+                <b-field label="Celular"
                 :type="{ 'is-danger': !isTelefonoValid }"
-                :message="{ 'Teléfono no válido': !isTelefonoValid }">
-                  <b-input v-model="inputTelefono"></b-input>
+                :message="{ 'Celular no válido': !isTelefonoValid }">
+                  <b-input v-model="inputTelefono" :disabled="user && user.tipo != 1"></b-input>
 
                 </b-field>
               </div>
@@ -216,7 +216,7 @@
             <div class="columns">
               <div class="column">
                 <b-field label="Tipo Socio">
-                  <b-select placeholder="Tipo Socio" v-model="inputTipoSocio">
+                  <b-select placeholder="Tipo Socio" v-model="inputTipoSocio" :disabled="user && user.tipo != 1">
                     
                     <option value="1">Chofer</option>
                     <option value="2">Controlador</option>
@@ -232,8 +232,8 @@
                 <b-field label="Activo">
                   <b-select placeholder="Activo" v-model="inputActivo">
                     
-                    <option value="true">Activo</option>
-                    <option value="false">Inactivo</option>
+                    <option :value="true">Activo</option>
+                    <option :value="false">Inactivo</option>
 
                   </b-select>
                 </b-field>
@@ -301,7 +301,10 @@ export default {
             this.isNombresValid &&
             this.isApellidosValid &&
             this.isDireccionValid;
-        }
+        },
+        user() {
+            return this.$store.state.user;
+        },
     },
   data() {
     return {
@@ -424,15 +427,15 @@ export default {
 
         },
         validateNombres(input) {
-            const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+            const regex =/^(?!.*\s{3,})[a-zA-ZáéíóúÁÉÍÓÚñÑ-][a-zA-ZáéíóúÁÉÍÓÚñÑ-\s]*$/;
             this.isNombresValid = regex.test(input);
         },
         validateApellidos(input) {
-            const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+            const regex = /^(?!.*\s{3,})[a-zA-ZáéíóúÁÉÍÓÚñÑ-][a-zA-ZáéíóúÁÉÍÓÚñÑ-\s]*$/;
             this.isApellidosValid = regex.test(input);
         },
         validateDireccion(input) {
-            const regex = /^[0-9a-zA-ZáéíóúÁÉÍÓÚ-\s]+$/;
+            const regex =  /^(?!.*\s{3,})[0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-][0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-\s]*$/;
             this.isDireccionValid = regex.test(input);
         },
     fetchSocios() {

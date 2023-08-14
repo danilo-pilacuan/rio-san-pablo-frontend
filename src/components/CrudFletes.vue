@@ -49,26 +49,49 @@
                 <!-- <b-checkbox v-model="hasError">Show errors</b-checkbox> -->
                 <div class="modal-card" style="width: auto">
                     <header class="modal-card-head">
-                        <p class="modal-card-title">{{isAdd?'Crear':'Editar'}} {{ nombreEntidad }}</p>
+                        <p class="modal-card-title">{{ isEdit?"Editar":"Crear" }} {{ nombreEntidad }}</p>
                         <!-- <button type="button" class="delete" @click="showModalCreateEdit = false"> </button> -->
                         <b-button type="is-danger" @click="showModalCreateEdit = false" icon-left="close" rounded />
                     </header>
                     <section class="modal-card-body">
                         <div class="row">
+
                             <div class="columns">
-                                <div class="column">
-                                    <b-field label="Descripción">
+                                <div class="column is-12">
+                                    <b-field label="Descripción"
+                                        :type="{ 'is-danger': !isDescripcionValid }"
+                                        :message="{ 'Descripción no válida, solo se permiten letras, números y espacios': !isDescripcionValid }">
                                         <b-input v-model="flete.descripcion"></b-input>
                                     </b-field>
-                                    <b-field label="Lugar Inicio">
+                                    <b-field label="Lugar Inicio"
+                                        :type="{ 'is-danger': !isLugarInicioValid }"
+                                        :message="{ 'Lugar Inicio no válido, solo se permiten letras, números y espacios': !isLugarInicioValid }">
                                         <b-input v-model="flete.lugarInicio"></b-input>
                                     </b-field>
-                                    <b-field label="Lugar Fin">
+                                    <b-field label="Lugar Fin"
+                                        :type="{ 'is-danger': !isLugarFinValid }"
+                                        :message="{ 'Lugar Fin no válido, solo se permiten letras, números y espacios': !isLugarFinValid }">
                                         <b-input v-model="flete.lugarFin"></b-input>
                                     </b-field>
-                                    <b-field label="Número de Horas">
-                                        <b-numberinput v-model="flete.numHoras"></b-numberinput>
+                                    
+                                    
+                                    
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                        <div class="row">
+                            <div class="columns">
+                                <div class="column is-6">
+                                    <b-field label="Flete Activo">
+                                      <b-select placeholder="Seleccionar" v-model="flete.activa">                
+                                        <option :value="true">Si</option>
+                                        <option :value="false">No</option>
+                                      </b-select>
                                     </b-field>
+                                </div>
+                                <div class="column is-6">
                                     <b-field label="Unidad">
                             
                                         <b-select placeholder="Seleccionar Unidad" v-model="flete.unidadId">
@@ -80,41 +103,56 @@
                                         </option>
                                         </b-select>
                                     </b-field>
-                                    <b-field label="Hora Inicio">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="columns">
+                                
+                                
+                                        <div class="column is-6">
+                                    <!-- <b-field label="Hora Inicio">
                                       <b-timepicker v-model="inputHoraInicio" inline></b-timepicker>
 
-                                    </b-field>
-                                    <b-field label="Fecha Inicio">
-                                        <b-datepicker
+                                    </b-field> -->
+                                    <b-field label="Fecha Inicio"
+                                        :type="{ 'is-danger': !isHorasValid }"
+                                        :message="{ 'Fecha Inicio no válida, no puede ser mayor a fecha fin': !isHorasValid }">
+                                        <b-datetimepicker
                                             v-model="inputFechaInicio"
                                             placeholder="Seleccionar..."
                                             icon="calendar-today"
                                             :icon-right="inputFechaInicio ? 'close-circle' : ''"
                                             inline>
-                                        </b-datepicker>
+                                        </b-datetimepicker>
 
                                     </b-field>
-                                    <b-field label="Hora Fin">
+                                    
+                                </div>
+                                <div class="column is-6">
+                                    <!-- <b-field label="Hora Fin">
                                       <b-timepicker v-model="inputHoraFin" inline></b-timepicker>
-                                    </b-field>
+                                    </b-field> -->
                                     
                                     <b-field label="Fecha Fin">
-                                        <b-datepicker
+                                        <b-datetimepicker
                                             v-model="inputFechaFin"
+                                            :min-datetime="inputFechaInicio"
                                             placeholder="Seleccionar..."
                                             icon="calendar-today"
                                             :icon-right="inputFechaFin ? 'close-circle' : ''"
                                             inline>
-                                        </b-datepicker>
+                                        </b-datetimepicker>
                                     </b-field>
-                                    <b-field label="Flete Activo">
-                                      <b-select placeholder="Seleccionar" v-model="flete.activa">                
-                                        <option value="true">Si</option>
-                                        <option value="false">No</option>
-                                      </b-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="columns">
+                                <div class="column">
+                                    <b-field label="Número de Horas">
+                                        <b-numberinput v-model="flete.numHoras" disabled></b-numberinput>
                                     </b-field>
-                                  
-                                  
                                 </div>
                             </div>
                         </div>
@@ -122,8 +160,8 @@
                     <footer class="modal-card-foot">
                         <div class="columns">
                             <div class="column">
-                                <b-button type="is-primary" v-if="isAdd" @click="submit" label="Crear" />
-                                <b-button type="is-primary" v-else @click="submit" label="Editar" />
+                                <b-button type="is-primary" v-if="isAdd" @click="submit" label="Crear" :disabled="!formValidado" />
+                                <b-button type="is-primary" v-else @click="submit" label="Editar" :disabled="!formValidado" />
                             </div>
                             <div class="column">
                                 <b-button type="is-danger" @click="showModalCreateEdit = false" label="Cancelar" />
@@ -144,41 +182,85 @@
         HeroBar
     },
     watch: {
-      inputHoraFin: function(newVal) {
-
-        const horas = String(newVal.getHours()).padStart(2, '0');
-        const minutos = String(newVal.getMinutes()).padStart(2, '0');
-        this.flete.horaFin=`${horas}:${minutos}`;
-
-      },
-      inputHoraInicio: function(newVal) {
-        const horas = String(newVal.getHours()).padStart(2, '0');
-        const minutos = String(newVal.getMinutes()).padStart(2, '0');
-        this.flete.horaInicio=`${horas}:${minutos}`;
-      },
       inputFechaFin: function(newVal) {
 
-        const day = String(newVal.getDate()).padStart(2, '0');
-        const month = String(newVal.getMonth() + 1).padStart(2, '0');
-        const year = String(newVal.getFullYear());
+        // const day = String(newVal.getDate()).padStart(2, '0');
+        // const month = String(newVal.getMonth() + 1).padStart(2, '0');
+        // const year = String(newVal.getFullYear());
 
-        this.flete.fechaFin=`${day}-${month}-${year}`;
+        // this.flete.fechaFin=`${day}-${month}-${year}`;
 
+        console.log(this.inputFechaFin)
+        console.log(this.inputFechaInicio)
+        if(this.inputFechaFin<this.inputFechaInicio)
+        {
+            this.$buefy.dialog.alert("La fecha de fin no puede ser menor a la fecha de inicio");
+            this.isHorasValid=false;
+        }
+        else
+        {
+            this.isHorasValid=true;
+        }
+
+        this.flete.fechaFin=newVal;
+        const diferenciaEnMilisegundos = this.inputFechaFin.getTime() - this.inputFechaInicio.getTime();
+        const diferenciaEnHoras = Math.ceil(diferenciaEnMilisegundos / (1000 * 60 * 60));
+        this.flete.numHoras=diferenciaEnHoras;
       },
       inputFechaInicio: function(newVal) {
-        const day = String(newVal.getDate()).padStart(2, '0');
-        const month = String(newVal.getMonth() + 1).padStart(2, '0');
-        const year = String(newVal.getFullYear());
+        // const day = String(newVal.getDate()).padStart(2, '0');
+        // const month = String(newVal.getMonth() + 1).padStart(2, '0');
+        // const year = String(newVal.getFullYear());
 
-        this.flete.fechaInicio=`${day}-${month}-${year}`;
+        // this.flete.fechaInicio=`${day}-${month}-${year}`;
+        console.log(this.inputFechaFin)
+        console.log(this.inputFechaInicio)
+        if(this.inputFechaFin<this.inputFechaInicio)
+        {
+            this.$buefy.dialog.alert("La fecha de fin no puede ser menor a la fecha de inicio");
+            this.isHorasValid=false;
+        }
+        else
+        {
+            this.isHorasValid=true;
+        }
+
+        this.flete.fechaInicio=newVal;
+        const diferenciaEnMilisegundos = this.inputFechaFin.getTime() - this.inputFechaInicio.getTime();
+        const diferenciaEnHoras = Math.ceil(diferenciaEnMilisegundos / (1000 * 60 * 60));
+        this.flete.numHoras=diferenciaEnHoras;
+
       },
+      'flete.descripcion': function (newVal) {
+            this.validateDescripcion(newVal);
+        },
+        'flete.lugarInicio': function (newVal) {
+            this.validateLugarInicio(newVal);
+        },
+        'flete.lugarFin': function (newVal) {
+            this.validateLugarFin(newVal);
+        },
       
+    },
+    computed: {
+        user() {
+            return this.$store.state.user;
+        },
+        formValidado() {
+            return this.isDescripcionValid &&
+                this.isLugarInicioValid &&
+                this.isHorasValid &&
+                this.isLugarFinValid;
+        }
     },
     data() {
         return {
-            inputHoraFin:new Date(),
-            inputHoraInicio:new Date(),
-            inputFechaFin:new Date(),
+            isDescripcionValid: false,
+            isLugarInicioValid: false,
+            isLugarFinValid: false,
+            isHorasValid:true,
+
+            inputFechaFin:new Date((new Date()).getTime() + (24 * 60 * 60 * 1000)),
             inputFechaInicio:new Date(),
             tipoUsuario: 1,
             idSeleccionado: 0,
@@ -210,18 +292,18 @@
                     field: "fechaInicio",
                     label: "Fecha Inicio",
                 },
-                {
-                    field: "horaInicio",
-                    label: "Hora Inicio",
-                },
+                // {
+                //     field: "horaInicio",
+                //     label: "Hora Inicio",
+                // },
                 {
                     field: "fechaFin",
                     label: "Fecha Fin",
                 },
-                {
-                    field: "horaFin",
-                    label: "Hora Fin",
-                },
+                // {
+                //     field: "horaFin",
+                //     label: "Hora Fin",
+                // },
                 {
                     field: "numHoras",
                     label: "Número de Horas",
@@ -254,33 +336,40 @@
     },
     methods: {
         resetForm() {
-
-            const horaInicio = new Date();
-            horaInicio.setHours(22); 
-            horaInicio.setMinutes(0);
-
-            const horaFin = new Date();
-            horaFin.setHours(5); 
-            horaFin.setMinutes(0); 
-            this.inputHoraInicio=horaInicio;
-            this.inputHoraFin=horaFin;
+            this.inputFechaFin=new Date((new Date()).getTime() + (24 * 60 * 60 * 1000)),
+            this.inputFechaInicio=new Date(),
+            
             this.flete = {
                 id: 0,
                 descripcion: "",
                 lugarInicio: "",
                 lugarFin: "",
-                horaInicio: "22:00",
-                horaFin: "05:00",
-                fechaInicio: null,
-                fechaFin: null,
-                numHoras: 0,
+                fechaInicio: this.inputFechaInicio,
+                fechaFin: this.inputFechaFin,
+                numHoras: 24,
                 activa: true,
-                unidadId: 0,
+                //unidadId: 0,
+            }
+            if(this.tablaUnidades.length>0)
+            {
+                this.flete.unidadId=this.tablaUnidades[0].id
             }
             this.isAdd = false;
             this.isEdit = false;
             this.showModalCreateEdit = false;
             this.fetchFletes();
+        },
+        validateDescripcion(input) {
+            const regex =  /^(?!.*\s{3,})[0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-][0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-\s]*$/;
+            this.isDescripcionValid = regex.test(input);
+        },
+        validateLugarInicio(input) {
+            const regex =  /^(?!.*\s{3,})[0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-][0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-\s]*$/;
+            this.isLugarInicioValid = regex.test(input);
+        },
+        validateLugarFin(input) { 
+            const regex =  /^(?!.*\s{3,})[0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-][0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-\s]*$/;
+            this.isLugarFinValid = regex.test(input);
         },
         fetchFletes() {
             try {
@@ -313,6 +402,7 @@
                     .then((data) => {
                         if (data) {
                             this.tablaUnidades = data["data"];
+                            this.flete.unidadId=this.tablaUnidades[0].id;
                         } else {
                             //this.$router.push("/login")
                             this.tablaUnidades = [];
@@ -369,7 +459,7 @@
                         this.$buefy.dialog.alert("Flete editado correctamente");
                         //llamar fetch
                         this.showModalCreateEdit = false;
-  
+                        this.resetForm();
                     });
             }
         },
@@ -377,6 +467,8 @@
             //obtener valores para editar en form
             this.flete=row;
             this.flete.unidadId=row.unidad.id;
+            this.inputFechaFin=new Date(row.fechaFin);
+            this.inputFechaInicio=new Date(row.fechaInicio);
             //mostrar modal
             this.showModalCreateEdit = true;
             this.isAdd = false;

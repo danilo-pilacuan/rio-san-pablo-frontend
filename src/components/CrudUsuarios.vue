@@ -57,13 +57,13 @@
   
             <b-table-column field="actions" label="Acciones" v-slot="props" cell-class="noPrint" header-class="noPrint">
               <div class="buttons" style="display: flex; flex-wrap: inherit;">
-              <b-button
+              <!-- <b-button
                   rounded
                   type="is-link"
                   icon-left="eye"
                   @click="verFicha(props.row)"
                 >
-                </b-button>
+                </b-button> -->
   
   
                 <b-button
@@ -293,11 +293,11 @@
   
           },
           validateNombres(input) {
-              const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+              const regex = /^(?!.*\s{3,})[0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-][0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-\s]*$/;
               this.isNombresValid = regex.test(input);
           },
           validateApellidos(input) {
-              const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+              const regex = /^(?!.*\s{3,})[0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-][0-9a-zA-ZáéíóúÁÉÍÓÚñÑ-\s]*$/;
               this.isApellidosValid = regex.test(input);
           },
           validateClave(input) {

@@ -166,8 +166,8 @@
                 <b-field label="Activo">
                   <b-select placeholder="Activo" v-model="inputActivo">
                     
-                    <option value="true">Activo</option>
-                    <option value="false">Inactivo</option>
+                    <option :value="true">Activo</option>
+                    <option :value="false">Inactivo</option>
 
                   </b-select>
                 </b-field>

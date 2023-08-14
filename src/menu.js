@@ -18,7 +18,7 @@ export default [
       to: '/rutas',
       label: 'Rutas',
       icon: 'table',
-      hiddenFor:2
+      //hiddenFor:2
     },
     {
       to: '/fletes',
@@ -43,7 +43,7 @@ export default [
       to: '/socios',
       label: 'Socios y Colaboradores',
       icon: 'account-circle',
-      hiddenFor:2
+      //hiddenFor:2
       //updateMark: true
     },
     {
