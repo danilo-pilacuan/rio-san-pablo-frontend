@@ -199,6 +199,9 @@ export default {
                     .then((data) => {
                         if (data) {
                             this.tablaDatos = data["data"];
+                            this.tablaDatos.forEach(element => {
+                                element.ingresosTotales=element.aportes.reduce((total,el)=>total+parseFloat(el.total),0)
+                            });
                         } else {
                             //this.$router.push("/login")
                             this.tablaDatos = [];

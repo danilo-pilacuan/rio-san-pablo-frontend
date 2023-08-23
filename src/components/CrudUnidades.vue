@@ -112,7 +112,7 @@
                 type="is-danger"
                 icon-left="delete"
                 @click="deleteFunction(props.row)"
-                :disabled="tipoUsuario==2"
+                :disabled="user && user.tipo != 1"
               >
               </b-button>
             </div>
@@ -277,8 +277,12 @@ export default {
   computed: {
     formValidado() {
             return this.isPlacaValid;
-        }
+        },
+    user() {
+            return this.$store.state.user;
+        },
     },
+    
   data() {
     return {
       isPlacaValid:false,
